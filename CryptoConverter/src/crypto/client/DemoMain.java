@@ -30,6 +30,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import me.joshmcfarlin.CryptoCompareAPI.Coins;
+import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList.CoinEntry;
+import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
 public class DemoMain extends Application{
 
@@ -41,8 +44,20 @@ public class DemoMain extends Application{
 
 	@Override
 	public void start(Stage primaryStage) {
-		readCurrencies("https://min-api.cryptocompare.com/data/all/coinlist");
-		currencies.sort((o1, o2) -> o1.getCoinNameFull().compareTo(o2.getCoinNameFull()));
+		try {
+			Coins.CoinList coinList = Coins.getCoinList();
+			for(CoinEntry coin : coinList.coins.values()) {
+				currencies.add(new Currency(coin));
+			}
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (OutOfCallsException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		currencies.sort((o1, o2) -> o1.getCoinFullName().compareTo(o2.getCoinFullName()));
 		currencies.add(0, new Currency("SEK", "Svensk krona", "Svensk krona (SEK)"));
 		currencies.add(0, new Currency("EUR", "Euro", "European Euro (EURO)"));
 		currencies.add(0, new Currency("USD", "American dollar", "American Dollar (USD)"));
@@ -66,36 +81,6 @@ public class DemoMain extends Application{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private void readCurrencies(String url) {
-		InputStream is;
-		try {
-			is = new URL(url).openStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			String jsonText = readAll(br);
-			JSONParser parser = new JSONParser();
-			try {
-				Object obj = parser.parse(jsonText);
-				JSONObject jsonObj = (JSONObject)obj;
-				JSONObject data = (JSONObject) jsonObj.get("Data");
-				for(Iterator iterator = data.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					currencies.add(new Currency((JSONObject)data.get(key)));
-				}
-				
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
 	}
 
 	private static String readAll(Reader rd) throws IOException {
