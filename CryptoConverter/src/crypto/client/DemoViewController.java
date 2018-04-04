@@ -1,10 +1,9 @@
-package crypto.client.view;
+package crypto.client;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import crypto.client.DemoMain;
 import crypto.client.model.Currency;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
