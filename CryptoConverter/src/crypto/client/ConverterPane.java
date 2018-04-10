@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -33,6 +34,9 @@ public class ConverterPane extends HBox{
 	
 	@FXML
 	private TextField rightTextField;
+	
+	@FXML
+	private DatePicker datePicker;
 	
 	
 	public ConverterPane(ObservableList<Currency> list) {
@@ -78,14 +82,14 @@ public class ConverterPane extends HBox{
 	@FXML
 	private void leftTextfieldAction() {
 		for(ConverterPaneListener listener : listeners) {
-			listener.leftTextfieldAction(this, leftComboBox.getValue(), rightComboBox.getValue(), Double.parseDouble(leftTextField.getText()));
+			listener.leftTextfieldAction(this, leftComboBox.getValue(), rightComboBox.getValue(), Double.parseDouble(leftTextField.getText()), datePicker.getValue());
 		}
 	}
 	
 	@FXML 
 	private void rightTextfieldAction() {
 		for(ConverterPaneListener listener : listeners) {
-			listener.rightTextfieldAction(this, rightComboBox.getValue(), leftComboBox.getValue(), Double.parseDouble(rightTextField.getText()));
+			listener.rightTextfieldAction(this, rightComboBox.getValue(), leftComboBox.getValue(), Double.parseDouble(rightTextField.getText()), datePicker.getValue());
 		}
 	}
 	

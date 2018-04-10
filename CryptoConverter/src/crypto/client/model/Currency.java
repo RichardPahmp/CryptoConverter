@@ -79,6 +79,7 @@ public class Currency {
 			for(CoinEntry coin : coinList.coins.values()) {
 				currencyList.add(new Currency(coin));
 			}
+			currencyList.sort((o1, o2) -> o1.getCoinFullName().compareTo(o2.getCoinFullName()));
 			currencyList.add(0, new Currency("SEK", "Svensk krona", "Svensk krona (SEK)"));
 			currencyList.add(0, new Currency("EUR", "Euro", "European Euro (EURO)"));
 			currencyList.add(0, new Currency("USD", "American dollar", "American Dollar (USD)"));
