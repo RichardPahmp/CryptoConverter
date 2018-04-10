@@ -29,15 +29,24 @@ public class MainApp extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
-			
 			tabPane = new TabPane();
-			Tab tab = new Tab("Tab 1");
-			tab.setClosable(false);
+			rootLayout.setCenter(tabPane);
+			
+			//load the converter tab
+			Tab conversionTab = new Tab("Conversion");
+			conversionTab.setClosable(false);
 			loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/ConverterView.fxml"));
-			tab.setContent(loader.load());
-			tabPane.getTabs().add(tab);
-			rootLayout.setCenter(tabPane);
+			conversionTab.setContent(loader.load());
+			tabPane.getTabs().add(conversionTab);
+			
+			//load the graph tab
+			Tab graphTab = new Tab("Graphs");
+			graphTab.setClosable(false);
+			loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("view/GraphView.fxml"));
+			graphTab.setContent(loader.load());
+			tabPane.getTabs().add(graphTab);
 			
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);

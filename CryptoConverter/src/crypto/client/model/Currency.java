@@ -1,13 +1,17 @@
 package crypto.client.model;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.io.IOException;
+import java.util.ArrayList;
 
+import me.joshmcfarlin.CryptoCompareAPI.Coins;
+import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList.CoinEntry;
+import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
 public class Currency {
+	
+	private static CoinList coinList;
+	private static ArrayList<Currency> currencyList;
 	
 	private String symbol;
 	private String ImageUrl;
@@ -49,5 +53,36 @@ public class Currency {
 	
 	public String toString() {
 		return this.coinFullName;
+	}
+	
+	public static CoinList getCoinList() {
+		if(Currency.coinList == null) {
+			try {
+				Currency.coinList = Coins.getCoinList();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (OutOfCallsException e) {
+				e.printStackTrace();
+			}
+		}
+		return coinList;
+	}
+	
+	public static ArrayList<Currency> getCurrencyList(){
+		if(coinList == null) {
+			getCoinList();
+		}
+		if(currencyList == null) {
+			currencyList = new ArrayList<Currency>();
+		}
+		if(currencyList.size() <= 0) {
+			for(CoinEntry coin : coinList.coins.values()) {
+				currencyList.add(new Currency(coin));
+			}
+			currencyList.add(0, new Currency("SEK", "Svensk krona", "Svensk krona (SEK)"));
+			currencyList.add(0, new Currency("EUR", "Euro", "European Euro (EURO)"));
+			currencyList.add(0, new Currency("USD", "American dollar", "American Dollar (USD)"));
+		}
+		return currencyList;
 	}
 }
