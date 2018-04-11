@@ -66,6 +66,9 @@ public class ConverterPane extends HBox{
 		leftComboBox.getSelectionModel().select(0);
 		rightComboBox.getSelectionModel().select(0);
 		
+		leftTextField.setText("0");
+		rightTextField.setText("0");
+		
 		listeners = new ArrayList<ConverterPaneListener>();
 	}
 	
@@ -112,7 +115,18 @@ public class ConverterPane extends HBox{
 	 * @return ConverterData A class containing the selections made by the user.
 	 */
 	public ConverterData getConverterData() {
-		return new ConverterData(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol(), datePicker.getValue(), Double.parseDouble(leftTextField.getText()), Double.parseDouble(rightTextField.getText()));
+		double leftSum, rightSum;
+		try {
+			leftSum = Double.parseDouble(leftTextField.getText());
+		} catch (NumberFormatException e) {
+			leftSum = 0.0;
+		}
+		try {
+			rightSum = Double.parseDouble(rightTextField.getText());
+		} catch (NumberFormatException e) {
+			rightSum = 0.0;
+		}
+		return new ConverterData(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol(), datePicker.getValue(), leftSum, rightSum);
 	}
 	
 	@FXML
