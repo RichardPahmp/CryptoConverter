@@ -47,7 +47,8 @@ public class GraphViewController implements Initializable {
 
 		XYChart.Series series = new XYChart.Series();
 
-		try {
+		//Load the chart here. Commented out because of lag
+		/*try {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 15);
 			long time = 0;
@@ -64,7 +65,7 @@ public class GraphViewController implements Initializable {
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private class HoverNode extends StackPane {

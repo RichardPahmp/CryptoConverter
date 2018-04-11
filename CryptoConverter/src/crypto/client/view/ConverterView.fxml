@@ -5,6 +5,7 @@
 
 <VBox fx:id="vBox" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="crypto.client.ConverterViewController">
    <children>
+      <Button mnemonicParsing="false" onAction="#saveData" text="Save" />
       <Button mnemonicParsing="false" onAction="#addConverterPane" text="Add" />
    </children>
 </VBox>
