@@ -18,6 +18,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
 
+/**
+ * An HBox node Containing UI elements for converting a currency to a different currency.
+ * @author Richard
+ *
+ */
 public class ConverterPane extends HBox{
 	
 	private ArrayList<ConverterPaneListener> listeners;
@@ -40,7 +45,10 @@ public class ConverterPane extends HBox{
 	@FXML
 	private DatePicker datePicker;
 	
-	
+	/**
+	 * Initialize a ConverterPane with a list of currencies.
+	 * @param list The list of currencies the user can choose from.
+	 */
 	public ConverterPane(ObservableList<Currency> list) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("view/ConverterPane.fxml"));
 		loader.setRoot(this);
@@ -61,6 +69,10 @@ public class ConverterPane extends HBox{
 		listeners = new ArrayList<ConverterPaneListener>();
 	}
 	
+	/**
+	 * Set the data to display in the ConverterPane
+	 * @param data The data to display
+	 */
 	public void setConverterData(ConverterData data) {
 		selectCurrencyLeft(data.getLeftCurrency());
 		selectCurrencyRight(data.getRightCurrency());
@@ -69,6 +81,10 @@ public class ConverterPane extends HBox{
 		rightTextField.setText(data.getRightSum() + "");
 	}
 	
+	/**
+	 * Change the current selection of the left combobox to the currency with the given symbol.
+	 * @param symbol The symbol of the currency to select.
+	 */
 	public void selectCurrencyLeft(String symbol) {
 		for(Currency currency : leftComboBox.getItems()) {
 			if(currency.getSymbol().equals(symbol)) {
@@ -78,6 +94,10 @@ public class ConverterPane extends HBox{
 		}
 	}
 
+	/**
+	 * Change the current selection of the right combobox to the currency with the given symbol.
+	 * @param symbol The symbol of the currency to select.
+	 */
 	public void selectCurrencyRight(String symbol) {
 		for(Currency currency : rightComboBox.getItems()) {
 			if(currency.getSymbol().equals(symbol)) {
@@ -86,11 +106,11 @@ public class ConverterPane extends HBox{
 			}
 		}
 	}
-	
-	public Pair<String, String> getCurrencyChoices(){
-		return new Pair<String, String>(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol());
-	}
-	
+
+	/**
+	 * Get a ConverterData object containing the data entered by the user.
+	 * @return ConverterData A class containing the selections made by the user.
+	 */
 	public ConverterData getConverterData() {
 		return new ConverterData(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol(), datePicker.getValue(), Double.parseDouble(leftTextField.getText()), Double.parseDouble(rightTextField.getText()));
 	}
@@ -115,6 +135,9 @@ public class ConverterPane extends HBox{
 		}
 	}
 	
+	/**
+	 * Called when the user presses enter when the left textfield is selected.
+	 */
 	@FXML
 	private void leftTextfieldAction() {
 		for(ConverterPaneListener listener : listeners) {
@@ -131,6 +154,9 @@ public class ConverterPane extends HBox{
 		}
 	}
 	
+	/**
+	 * Called when the user presses enter when the right textfield is selected.
+	 */
 	@FXML 
 	private void rightTextfieldAction() {
 		for(ConverterPaneListener listener : listeners) {
@@ -147,11 +173,19 @@ public class ConverterPane extends HBox{
 		}
 	}
 	
+	/**
+	 * Set the text in the left textfield.
+	 * @param text
+	 */
 	public void setLeftTextfieldText(String text) {
 		leftTextField.setText(text);
 		
 	}
 	
+	/**
+	 * Set the text in the right textfield.
+	 * @param text
+	 */
 	public void setRightTextfieldText(String text) {
 		rightTextField.setText(text);
 	}

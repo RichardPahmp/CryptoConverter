@@ -8,8 +8,9 @@ import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.Map;
 
-import crypto.client.model.ConverterChoices;
 import crypto.client.model.Currency;
+import crypto.client.model.CurrencyList;
+import crypto.util.ConverterChoices;
 import crypto.util.ConverterData;
 import crypto.util.Pair;
 import javafx.collections.FXCollections;
@@ -23,6 +24,11 @@ import me.joshmcfarlin.CryptoCompareAPI.Market;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList.CoinEntry;
 import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
+/**
+ * The controller for the ConverterView.
+ * @author Richard
+ *
+ */
 public class ConverterViewController implements ConverterPaneListener {
 
 	@FXML
@@ -30,9 +36,13 @@ public class ConverterViewController implements ConverterPaneListener {
 
 	private ObservableList<Currency> currencies = FXCollections.observableArrayList();
 
+	/**
+	 * The method run by the JavaFX loader when the view has finished loading.
+	 * Loads ConverterData from disk and adds it to the view.
+	 */
 	@FXML
 	private void initialize() {
-		currencies.addAll(Currency.getCurrencyList());
+		currencies.addAll(CurrencyList.getCurrencyList());
 		
 		ConverterChoices save = new ConverterChoices();
 		try {
@@ -44,12 +54,19 @@ public class ConverterViewController implements ConverterPaneListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		Iterator<ConverterData> iterator = save.getIterator();
+		if(!iterator.hasNext()) {
+			addConverterPane();
+		}
 		while(iterator.hasNext()) {
 			addConverterPane(iterator.next());
 		}
 	}
 
+	/**
+	 * Creates a ConverterPane and adds it to the view.
+	 */
 	@FXML
 	private void addConverterPane() {
 		ConverterPane pane = new ConverterPane(currencies);
@@ -57,6 +74,10 @@ public class ConverterViewController implements ConverterPaneListener {
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
 	}
 	
+	/**
+	 * Creates a ConverterPane and adds it to the view with the values in the given ConverterData.
+	 * @param data The data to initialize the pane with.
+	 */
 	private void addConverterPane(ConverterData data) {
 		ConverterPane pane = new ConverterPane(currencies);
 		pane.addConverterPaneListener(this);
@@ -64,11 +85,23 @@ public class ConverterViewController implements ConverterPaneListener {
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
 	}
 
+	/**
+	 * Callback for when the user presses the close button on a ConverterPane.
+	 * @param The pane that called this listener.
+	 */
 	@Override
 	public void closeButtonClicked(ConverterPane pane) {
 		vBox.getChildren().remove(pane);
 	}
 
+	/**
+	 * Callback for when the user presses enter while the left textfield is selected.
+	 * @param pane The pane that called this listener.
+	 * @param from The currency to convert from.
+	 * @param to The currency to convert to.
+	 * @param sum The sum to convert to a different currency.
+	 * @param date The conversion will be done with the currency values at the given date.
+	 */
 	@Override
 	public void leftTextfieldAction(ConverterPane pane, Currency from, Currency to, double sum, LocalDate date) {
 		try {
@@ -89,6 +122,14 @@ public class ConverterViewController implements ConverterPaneListener {
 		}
 	}
 
+	/**
+	 * Callback for when the user presses enter while the right textfield is selected.
+	 * @param pane The pane that called this listener.
+	 * @param from The currency to convert from.
+	 * @param to The currency to convert to.
+	 * @param sum The sum to convert to a different currency.
+	 * @param date The conversion will be done with the currency values at the given date.
+	 */
 	@Override
 	public void rightTextfieldAction(ConverterPane pane, Currency from, Currency to, double sum, LocalDate date) {
 		try {
@@ -109,6 +150,9 @@ public class ConverterViewController implements ConverterPaneListener {
 		}
 	}
 	
+	/**
+	 * Get the ConverterData from all ConverterPanes and save them to the disk.
+	 */
 	@FXML
 	public void saveData() {
 		ConverterChoices save = new ConverterChoices();

@@ -10,12 +10,20 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+/**
+ * The main class for the JavaFX project.
+ * @author Richard
+ *
+ */
 public class MainApp extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private TabPane tabPane;
 	
+	/**
+	 * Called when javaFX has initialized
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -24,6 +32,9 @@ public class MainApp extends Application {
 		initRootLayout();
 	}
 	
+	/**
+	 * load the different views and put them into the RootLayout.
+	 */
 	private void initRootLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();

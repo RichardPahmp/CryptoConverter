@@ -24,6 +24,11 @@ import me.joshmcfarlin.CryptoCompareAPI.Historic;
 import me.joshmcfarlin.CryptoCompareAPI.Historic.History;
 import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
+/**
+ * The controller for the GraphView.
+ * @author Richard
+ *
+ */
 public class GraphViewController implements Initializable {
 
 	@FXML
@@ -35,6 +40,10 @@ public class GraphViewController implements Initializable {
 	@FXML
 	private ListView<Currency> listView;
 
+	/**
+	 * Called by javaFX when the view has finished loading.
+	 * Initializes the graph.
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		CategoryAxis xAxis = new CategoryAxis();
@@ -47,8 +56,7 @@ public class GraphViewController implements Initializable {
 
 		XYChart.Series series = new XYChart.Series();
 
-		//Load the chart here. Commented out because of lag
-		/*try {
+		try {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 15);
 			long time = 0;
@@ -65,9 +73,14 @@ public class GraphViewController implements Initializable {
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
 			e.printStackTrace();
-		}*/
+		}
 	}
 
+	/**
+	 * A Node for showing graph values when mousing over nodes in the graph.
+	 * @author Richard
+	 *
+	 */
 	private class HoverNode extends StackPane {
 		public HoverNode(double value) {
 			setPrefSize(10, 10);
