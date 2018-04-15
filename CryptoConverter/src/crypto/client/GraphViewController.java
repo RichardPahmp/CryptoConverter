@@ -56,17 +56,32 @@ public class GraphViewController implements Initializable {
 
 		XYChart.Series series = new XYChart.Series();
 
+//		try {
+//			Calendar cal = Calendar.getInstance();
+//			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 15);
+//			long time = 0;
+//			for (int i = 0; i < 15; i++) {
+//				time = cal.getTimeInMillis();
+//				Double n = Historic.getDayAverage("BTC", "USD", time / 1000L);
+//				XYChart.Data data = new XYChart.Data(cal.getTime().toString(), n);
+//				data.setNode(new HoverNode(n));
+//				series.getData().add(data);
+//				cal.set(Calendar.DATE, cal.get(Calendar.DATE) + 1);
+//			}
+//			chart.getData().add(series);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (OutOfCallsException e) {
+//			e.printStackTrace();
+//		}
+		
 		try {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 15);
-			long time = 0;
-			for (int i = 0; i < 15; i++) {
-				time = cal.getTimeInMillis();
-				Double n = Historic.getDayAverage("BTC", "USD", time / 1000L);
-				XYChart.Data data = new XYChart.Data(cal.getTime().toString(), n);
-				data.setNode(new HoverNode(n));
-				series.getData().add(data);
-				cal.set(Calendar.DATE, cal.get(Calendar.DATE) + 1);
+			History history = Historic.getDay("BTC", "SEK", 200);
+			for(History.Data data : history.data) {
+				Date time = new Date(data.time * 1000l);
+				XYChart.Data chartData = new XYChart.Data(time.toString(), data.close);
+				chartData.setNode(new HoverNode(data.close));
+				series.getData().add(chartData);
 			}
 			chart.getData().add(series);
 		} catch (IOException e) {
