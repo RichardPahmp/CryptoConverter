@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import crypto.client.model.Currency;
+import crypto.client.model.CurrencyList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,8 +17,10 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import me.joshmcfarlin.CryptoCompareAPI.Historic;
@@ -38,8 +41,14 @@ public class GraphViewController implements Initializable {
 	private ComboBox<Currency> comboBox;
 	
 	@FXML
-	private ListView<Currency> listView;
-
+	private ListView<ToggleButton> listView;
+	
+	@FXML
+	private DatePicker datePickerFrom;
+	
+	@FXML
+	private DatePicker datePickerTo;
+	
 	/**
 	 * Called by javaFX when the view has finished loading.
 	 * Initializes the graph.
@@ -54,29 +63,12 @@ public class GraphViewController implements Initializable {
 		chart.setCursor(Cursor.CROSSHAIR);
 		chart.setCreateSymbols(false);
 
+		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
+		
 		XYChart.Series series = new XYChart.Series();
-
-//		try {
-//			Calendar cal = Calendar.getInstance();
-//			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 15);
-//			long time = 0;
-//			for (int i = 0; i < 15; i++) {
-//				time = cal.getTimeInMillis();
-//				Double n = Historic.getDayAverage("BTC", "USD", time / 1000L);
-//				XYChart.Data data = new XYChart.Data(cal.getTime().toString(), n);
-//				data.setNode(new HoverNode(n));
-//				series.getData().add(data);
-//				cal.set(Calendar.DATE, cal.get(Calendar.DATE) + 1);
-//			}
-//			chart.getData().add(series);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (OutOfCallsException e) {
-//			e.printStackTrace();
-//		}
 		
 		try {
-			History history = Historic.getDay("BTC", "SEK", 200);
+			History history = Historic.getDay("BTC", "USD", 200);
 			for(History.Data data : history.data) {
 				Date time = new Date(data.time * 1000l);
 				XYChart.Data chartData = new XYChart.Data(time.toString(), data.close);
@@ -90,7 +82,61 @@ public class GraphViewController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Called when the Add-button is clicked
+	 */
+	@FXML
+	private void onAddButtonClick() {
+		Currency currency = comboBox.getValue();
+		try {
+			History history = Historic.getDay(currency.getSymbol(), "USD", 2000);
+			ToggleButton button = new ToggleButton(currency.getCoinFullName());
+			button.setUserData(new GraphButtonData(currency, history));
+			button.setOnAction(e -> onToggleButtonAction((GraphButtonData)button.getUserData()));
+			listView.getItems().add(button);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OutOfCallsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Called when a ToggleButton in the listview is pressed
+	 * @param data The GraphButtonData held by the calling button
+	 */
+	private void onToggleButtonAction(GraphButtonData data) {
+		System.out.println(data.getCurrency().toString());
+	}
+	
+	/**
+	 * An inner class holding the data for a currency. Used to bind a button a currency.
+	 * @author Richard
+	 *
+	 */
+	private class GraphButtonData {
+		
+		private Currency currency;
+		private History history;
+		
+		public GraphButtonData(Currency currency, History history) {
+			this.currency = currency;
+			this.history = history;
+		}
+		
+		public Currency getCurrency() {
+			return currency;
+		}
+		
+		public History getHistory() {
+			return history;
+		}
+		
+	}
+	
 	/**
 	 * A Node for showing graph values when mousing over nodes in the graph.
 	 * @author Richard
@@ -100,7 +146,7 @@ public class GraphViewController implements Initializable {
 		public HoverNode(double value) {
 			setPrefSize(10, 10);
 			
-			Label label = new Label("$" + value);
+			Label label = new Label(value+"");
 			label.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
 			label.getStyleClass().addAll("default-color0", "chart-line-symbol", "chart-series-line");
 			label.setStyle("-fx-font-size: 10; -fx-font-weight: bold;");

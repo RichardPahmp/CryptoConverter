@@ -1,4 +1,4 @@
-package crypto.client;
+package crypto.demo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class DemoMain extends Application{
 			this.primaryStage.setTitle("Crypto Demo");
 
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(DemoMain.class.getResource("view/DemoView.fxml"));
+			loader.setLocation(DemoMain.class.getResource("DemoView.fxml"));
 			demoView = (AnchorPane) loader.load();
 
 			controller = loader.getController();

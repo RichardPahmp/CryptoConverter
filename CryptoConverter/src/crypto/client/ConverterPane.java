@@ -69,6 +69,7 @@ public class ConverterPane extends HBox{
 		leftTextField.setText("0");
 		rightTextField.setText("0");
 		
+		
 		listeners = new ArrayList<ConverterPaneListener>();
 	}
 	

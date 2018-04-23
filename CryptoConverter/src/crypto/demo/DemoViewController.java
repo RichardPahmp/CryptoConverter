@@ -1,4 +1,4 @@
-package crypto.client;
+package crypto.demo;
 
 import java.net.URL;
 import java.util.ArrayList;
