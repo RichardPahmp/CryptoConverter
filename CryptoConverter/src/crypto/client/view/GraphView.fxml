@@ -33,10 +33,10 @@
             <children>
             	<LineChart fx:id="chart" animated="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             		<xAxis>
-            			<CategoryAxis side="BOTTOM" />
+            			<CategoryAxis side="BOTTOM" fx:id="xAxis" />
             		</xAxis>
             		<yAxis>
-            			<NumberAxis side="LEFT" />
+            			<NumberAxis fx:id="yAxis" side="LEFT" />
             		</yAxis>
             	</LineChart>
             </children>

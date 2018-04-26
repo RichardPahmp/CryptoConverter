@@ -2,12 +2,14 @@ package crypto.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
+import crypto.util.TimeUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,6 +40,12 @@ public class GraphViewController implements Initializable {
 	private LineChart<String, Number> chart;
 	
 	@FXML
+	private CategoryAxis xAxis;
+	
+	@FXML
+	private NumberAxis yAxis;
+	
+	@FXML
 	private ComboBox<Currency> comboBox;
 	
 	@FXML
@@ -55,32 +63,31 @@ public class GraphViewController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		CategoryAxis xAxis = new CategoryAxis();
-		NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel("Value in USD");
 		xAxis.setLabel("Day");
 		chart.setTitle("CryptoGraph");
 		chart.setCursor(Cursor.CROSSHAIR);
 		chart.setCreateSymbols(false);
-
+		
 		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
 		
-		XYChart.Series series = new XYChart.Series();
+		/*XYChart.Series series = new XYChart.Series();
 		
 		try {
 			History history = Historic.getDay("BTC", "USD", 200);
 			for(History.Data data : history.data) {
-				Date time = new Date(data.time * 1000l);
-				XYChart.Data chartData = new XYChart.Data(time.toString(), data.close);
-				chartData.setNode(new HoverNode(data.close));
+				LocalDate date = TimeUtil.timestampToDate(data.time * 1000L);
+				XYChart.Data chartData = new XYChart.Data(date.toString(), data.open);
+				//chartData.setNode(new HoverNode(data.close));
 				series.getData().add(chartData);
+				
 			}
 			chart.getData().add(series);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	/**
@@ -90,10 +97,10 @@ public class GraphViewController implements Initializable {
 	private void onAddButtonClick() {
 		Currency currency = comboBox.getValue();
 		try {
-			History history = Historic.getDay(currency.getSymbol(), "USD", 2000);
+			History history = Historic.getDay(currency.getSymbol(), "USD", 200);
 			ToggleButton button = new ToggleButton(currency.getCoinFullName());
 			button.setUserData(new GraphButtonData(currency, history));
-			button.setOnAction(e -> onToggleButtonAction((GraphButtonData)button.getUserData()));
+			button.setOnAction(e -> onToggleButtonAction((GraphButtonData)button.getUserData(), button.isSelected()));
 			listView.getItems().add(button);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -108,12 +115,22 @@ public class GraphViewController implements Initializable {
 	 * Called when a ToggleButton in the listview is pressed
 	 * @param data The GraphButtonData held by the calling button
 	 */
-	private void onToggleButtonAction(GraphButtonData data) {
-		System.out.println(data.getCurrency().toString());
+	private void onToggleButtonAction(GraphButtonData data, boolean isSelected) {
+		if(isSelected) {
+			XYChart.Series series = new XYChart.Series();
+			series.setName(data.currency.getSymbol());
+			for(History.Data d : data.history.data) {
+				series.getData().add(new XYChart.Data(TimeUtil.timestampToDate(d.time * 1000L).toString(), d.open));
+			}
+			data.series = series;
+			chart.getData().add(series);
+		} else {
+			chart.getData().remove(data.series);
+		}
 	}
 	
 	/**
-	 * An inner class holding the data for a currency. Used to bind a button a currency.
+	 * An inner class holding the data and history for a currency. Used to bind a button a currency.
 	 * @author Richard
 	 *
 	 */
@@ -121,18 +138,11 @@ public class GraphViewController implements Initializable {
 		
 		private Currency currency;
 		private History history;
+		private XYChart.Series series;
 		
 		public GraphButtonData(Currency currency, History history) {
 			this.currency = currency;
 			this.history = history;
-		}
-		
-		public Currency getCurrency() {
-			return currency;
-		}
-		
-		public History getHistory() {
-			return history;
 		}
 		
 	}
