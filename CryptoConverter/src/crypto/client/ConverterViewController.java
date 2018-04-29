@@ -87,7 +87,7 @@ public class ConverterViewController implements ConverterPaneListener {
 
 	/**
 	 * Callback for when the user presses the close button on a ConverterPane.
-	 * @param The pane that called this listener.
+	 * @param pane The pane that called this listener.
 	 */
 	@Override
 	public void closeButtonClicked(ConverterPane pane) {
