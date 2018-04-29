@@ -1,0 +1,5 @@
+JPY,Japanese yen,Japanese Yen (JPY)
+GBP,British pound,British Pound (GBP)
+USD,American dollar,American Dollar (USD)
+EUR,Euro,European Euro (EURO)
+SEK,Svensk krona,Svensk krona (SEK)
