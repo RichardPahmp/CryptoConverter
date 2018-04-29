@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
 import crypto.util.TimeUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,10 +20,12 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -71,6 +75,12 @@ public class GraphViewController implements Initializable {
 		
 		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
 		
+		datePickerFrom.setValue(LocalDate.now().minusMonths(1));
+		datePickerTo.setValue(LocalDate.now());
+		datePickerFrom.setOnAction(e -> onDateChanged());
+		datePickerTo.setOnAction(e -> onDateChanged());
+		
+		
 		/*XYChart.Series series = new XYChart.Series();
 		
 		try {
@@ -97,8 +107,10 @@ public class GraphViewController implements Initializable {
 	private void onAddButtonClick() {
 		Currency currency = comboBox.getValue();
 		try {
-			History history = Historic.getDay(currency.getSymbol(), "USD", 200);
+			History history = Historic.getDayAllData(currency.getSymbol(), "USD");
 			ToggleButton button = new ToggleButton(currency.getCoinFullName());
+			button.setMaxWidth(listView.getWidth());
+			button.textOverrunProperty().setValue(OverrunStyle.WORD_ELLIPSIS);
 			button.setUserData(new GraphButtonData(currency, history));
 			button.setOnAction(e -> onToggleButtonAction((GraphButtonData)button.getUserData(), button.isSelected()));
 			listView.getItems().add(button);
@@ -117,11 +129,9 @@ public class GraphViewController implements Initializable {
 	 */
 	private void onToggleButtonAction(GraphButtonData data, boolean isSelected) {
 		if(isSelected) {
-			XYChart.Series series = new XYChart.Series();
-			series.setName(data.currency.getSymbol());
-			for(History.Data d : data.history.data) {
-				series.getData().add(new XYChart.Data(TimeUtil.timestampToDate(d.time * 1000L).toString(), d.open));
-			}
+			XYChart.Series series = createSeries(data.currency.getSymbol(), data.history);
+//			series.setName(data.currency.getSymbol());
+//			series.getData().add(createFilteredGraphData(data.history, datePickerFrom.getValue(), datePickerTo.getValue()));
 			data.series = series;
 			chart.getData().add(series);
 		} else {
@@ -129,6 +139,46 @@ public class GraphViewController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Run when a the date in a datepicker is changed
+	 */
+	private void onDateChanged() {
+		chart.getData().clear();
+		for(ToggleButton toggleButton : listView.getItems()) {
+			if(toggleButton.isSelected()) {
+				GraphButtonData data = (GraphButtonData)toggleButton.getUserData();
+				XYChart.Series series = createSeries(data.currency.getSymbol(), data.history);
+				data.series = series;
+				chart.getData().add(series);
+			}
+		}
+	}
+	
+	private XYChart.Series createSeries(String name, History history){
+		XYChart.Series series = new XYChart.Series();
+		series.setName(name);
+		series.getData().addAll(createFilteredGraphData(history, datePickerFrom.getValue(), datePickerTo.getValue()));
+		return series;
+	}
+	
+	/**
+	 * Takes a History object and two dates. Returns a list of XYChart.Data objects between filtered by the dates.
+	 */
+	private ObservableList<XYChart.Data> createFilteredGraphData(History history, LocalDate fromDate, LocalDate toDate) {
+		ObservableList<XYChart.Data> list = FXCollections.observableArrayList();
+		for(History.Data data : history.data) {
+			LocalDate dataTime = TimeUtil.timestampToDate(data.time * 1000L);
+			if(dataTime.compareTo(fromDate) > 0 && dataTime.compareTo(toDate) < 0) {
+				if(data.open != 0) {
+					XYChart.Data newData = new XYChart.Data(dataTime.toString(), data.open);
+					newData.setNode(null);
+					list.add(newData);
+				}
+			}
+		}
+		return list;
+	}
+
 	/**
 	 * An inner class holding the data and history for a currency. Used to bind a button a currency.
 	 * @author Richard
