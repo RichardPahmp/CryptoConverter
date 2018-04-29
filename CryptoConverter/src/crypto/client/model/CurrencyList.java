@@ -14,22 +14,11 @@ import java.util.ArrayList;
 
 public class CurrencyList {
 
-	/**
-	 * A instance of a singleton class running throughout the applications lifetime.
-	 */
-	private static CurrencyList instance = new CurrencyList();
 
 	private static CoinList coinList;
 	private static ArrayList<Currency> currencyList;
 	private static String filename = "currencyList.txt";
 
-	private CurrencyList() {
-
-	}
-
-	public static CurrencyList getInstance() {
-		return instance;
-	}
 
 	/**
 	 * Returns a CoinList containing all available Coins from the CryptoCompareAPI.
@@ -71,7 +60,12 @@ public class CurrencyList {
 		return currencyList;
 	}
 
-	public void loadCurrencyList() throws IOException {
+    /**
+     * Reads a list of fiat-currencies from a textfile, and loads them to the top of the currencylist.
+     * @throws IOException
+     */
+
+	public static void loadCurrencyList() throws IOException {
 		currencyList = getCurrencyList();
 		Path path = Paths.get(filename);
 		BufferedReader br = Files.newBufferedReader(path);
