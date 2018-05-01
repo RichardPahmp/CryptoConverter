@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import crypto.client.model.Currency;
+import crypto.client.model.CurrencyImages;
 import crypto.client.model.CurrencyList;
 import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
@@ -15,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -27,6 +29,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import me.joshmcfarlin.CryptoCompareAPI.Historic;
@@ -107,9 +111,11 @@ public class GraphViewController implements Initializable {
 	private void onAddButtonClick() {
 		Currency currency = comboBox.getValue();
 		try {
+			Image image = CurrencyImages.get(currency.getSymbol(), currency.getImageUrl());
 			History history = Historic.getDayAllData(currency.getSymbol(), "USD");
-			ToggleButton button = new ToggleButton(currency.getCoinFullName());
+			ToggleButton button = new ToggleButton(currency.getCoinFullName(), new ImageView(image));
 			button.setMaxWidth(listView.getWidth());
+			button.setAlignment(Pos.BASELINE_LEFT);
 			button.textOverrunProperty().setValue(OverrunStyle.WORD_ELLIPSIS);
 			button.setUserData(new GraphButtonData(currency, history));
 			button.setOnAction(e -> onToggleButtonAction((GraphButtonData)button.getUserData(), button.isSelected()));

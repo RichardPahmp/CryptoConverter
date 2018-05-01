@@ -73,7 +73,7 @@ public class MainApp extends Application {
 	@Override
 	public void init() throws Exception {
 		try {
-			CurrencyList.getInstance().loadCurrencyList();
+			CurrencyList.loadCurrencyList();
 
 		} catch (IOException e) {
 			e.printStackTrace();

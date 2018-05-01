@@ -35,7 +35,7 @@ public class Currency {
 		this.symbol = coin.symbol;
 		this.coinName = coin.symbol;
 		this.coinFullName = coin.fullName;
-		this.ImageUrl = coin.url;
+		this.ImageUrl = coin.imageUrl;
 	}
 	
 	/**
