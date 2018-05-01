@@ -19,63 +19,69 @@ import javafx.scene.layout.VBox;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
 
 /**
- * An HBox node Containing UI elements for converting a currency to a different currency.
+ * An HBox node Containing UI elements for converting a currency to a different
+ * currency.
+ * 
  * @author Richard
  *
  */
-public class ConverterPane extends HBox{
-	
-	private ArrayList<ConverterPaneListener> listeners;
-	
+public class ConverterPane extends HBox {
+
+	private ConverterPaneListener listener;
+
 	@FXML
 	private Button closeButton;
-	
+
 	@FXML
 	private ComboBox<Currency> leftComboBox;
-	
+
 	@FXML
 	private ComboBox<Currency> rightComboBox;
-	
+
 	@FXML
 	private TextField leftTextField;
-	
+
 	@FXML
 	private TextField rightTextField;
-	
+
 	@FXML
 	private DatePicker datePicker;
-	
+
 	/**
 	 * Initialize a ConverterPane with a list of currencies.
-	 * @param list The list of currencies the user can choose from.
+	 * 
+	 * @param list
+	 *            The list of currencies the user can choose from.
 	 */
 	public ConverterPane(ObservableList<Currency> list) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("view/ConverterPane.fxml"));
 		loader.setRoot(this);
 		loader.setController(this);
-		
+
 		try {
 			loader.load();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		leftComboBox.getItems().setAll(list);
 		rightComboBox.getItems().setAll(list);
 		leftComboBox.getSelectionModel().select(0);
 		rightComboBox.getSelectionModel().select(0);
 		
+		leftComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
+		rightComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
+
 		leftTextField.setText("0");
 		rightTextField.setText("0");
-		
-		
-		listeners = new ArrayList<ConverterPaneListener>();
 	}
-	
+
 	/**
 	 * Set the data to display in the ConverterPane
-	 * @param data The data to display
+	 * 
+	 * @param data
+	 *            The data to display
 	 */
 	public void setConverterData(ConverterData data) {
 		selectCurrencyLeft(data.getLeftCurrency());
@@ -84,14 +90,17 @@ public class ConverterPane extends HBox{
 		leftTextField.setText(data.getLeftSum() + "");
 		rightTextField.setText(data.getRightSum() + "");
 	}
-	
+
 	/**
-	 * Change the current selection of the left combobox to the currency with the given symbol.
-	 * @param symbol The symbol of the currency to select.
+	 * Change the current selection of the left combobox to the currency with the
+	 * given symbol.
+	 * 
+	 * @param symbol
+	 *            The symbol of the currency to select.
 	 */
 	public void selectCurrencyLeft(String symbol) {
-		for(Currency currency : leftComboBox.getItems()) {
-			if(currency.getSymbol().equals(symbol)) {
+		for (Currency currency : leftComboBox.getItems()) {
+			if (currency.getSymbol().equals(symbol)) {
 				leftComboBox.getSelectionModel().select(currency);
 				break;
 			}
@@ -99,12 +108,15 @@ public class ConverterPane extends HBox{
 	}
 
 	/**
-	 * Change the current selection of the right combobox to the currency with the given symbol.
-	 * @param symbol The symbol of the currency to select.
+	 * Change the current selection of the right combobox to the currency with the
+	 * given symbol.
+	 * 
+	 * @param symbol
+	 *            The symbol of the currency to select.
 	 */
 	public void selectCurrencyRight(String symbol) {
-		for(Currency currency : rightComboBox.getItems()) {
-			if(currency.getSymbol().equals(symbol)) {
+		for (Currency currency : rightComboBox.getItems()) {
+			if (currency.getSymbol().equals(symbol)) {
 				rightComboBox.getSelectionModel().select(currency);
 				break;
 			}
@@ -113,6 +125,7 @@ public class ConverterPane extends HBox{
 
 	/**
 	 * Get a ConverterData object containing the data entered by the user.
+	 * 
 	 * @return ConverterData A class containing the selections made by the user.
 	 */
 	public ConverterData getConverterData() {
@@ -127,78 +140,77 @@ public class ConverterPane extends HBox{
 		} catch (NumberFormatException e) {
 			rightSum = 0.0;
 		}
-		return new ConverterData(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol(), datePicker.getValue(), leftSum, rightSum);
+		return new ConverterData(leftComboBox.getValue().getSymbol(), rightComboBox.getValue().getSymbol(),
+				datePicker.getValue(), leftSum, rightSum);
 	}
-	
+
 	@FXML
 	private void initialize() {
-		
+
 	}
-	
+
 	public void addConverterPaneListener(ConverterPaneListener listener) {
-		listeners.add(listener);
+		this.listener = listener;
 	}
-	
-	public void removeConverterPaneListener(ConverterPaneListener listener) {
-		listeners.remove(listener);
+
+	public void removeConverterPaneListener() {
+		this.listener = null;
 	}
-	
+
 	@FXML
 	private void closeButtonClicked() {
-		for(ConverterPaneListener listener : listeners) {
-			listener.closeButtonClicked(this);
-		}
+		listener.closeButtonClicked(this);
 	}
-	
+
 	/**
 	 * Called when the user presses enter when the left textfield is selected.
 	 */
 	@FXML
 	private void leftTextfieldAction() {
-		for(ConverterPaneListener listener : listeners) {
-			double sum;
-			try {
-				sum = Double.parseDouble(leftTextField.getText());
-			} catch (NumberFormatException e) {
-				// TODO: Show error. the input is not a number.
-				System.out.println("Add error handling for not-a-number inputs");
-				e.printStackTrace();
-				return;
-			}
-			listener.leftTextfieldAction(this, leftComboBox.getValue(), rightComboBox.getValue(), sum, datePicker.getValue());
+		double sum;
+		try {
+			sum = Double.parseDouble(leftTextField.getText());
+		} catch (NumberFormatException e) {
+			// TODO: Show error. the input is not a number.
+			System.out.println("Add error handling for not-a-number inputs");
+			e.printStackTrace();
+			return;
 		}
+		listener.leftTextfieldAction(this, leftComboBox.getValue(), rightComboBox.getValue(), sum,
+				datePicker.getValue());
 	}
-	
+
 	/**
 	 * Called when the user presses enter when the right textfield is selected.
 	 */
-	@FXML 
+	@FXML
 	private void rightTextfieldAction() {
-		for(ConverterPaneListener listener : listeners) {
-			double sum;
-			try {
-				sum = Double.parseDouble(rightTextField.getText());
-			} catch (NumberFormatException e) {
-				// TODO: Show error. the input is not a number.
-				System.out.println("Add error handling for not-a-number inputs");
-				e.printStackTrace();
-				return;
-			}
-			listener.rightTextfieldAction(this, rightComboBox.getValue(), leftComboBox.getValue(), sum, datePicker.getValue());
+		double sum;
+		try {
+			sum = Double.parseDouble(rightTextField.getText());
+		} catch (NumberFormatException e) {
+			// TODO: Show error. the input is not a number.
+			System.out.println("Add error handling for not-a-number inputs");
+			e.printStackTrace();
+			return;
 		}
+		listener.rightTextfieldAction(this, rightComboBox.getValue(), leftComboBox.getValue(), sum,
+				datePicker.getValue());
 	}
-	
+
 	/**
 	 * Set the text in the left textfield.
+	 * 
 	 * @param text
 	 */
 	public void setLeftTextfieldText(String text) {
 		leftTextField.setText(text);
-		
+
 	}
-	
+
 	/**
 	 * Set the text in the right textfield.
+	 * 
 	 * @param text
 	 */
 	public void setRightTextfieldText(String text) {

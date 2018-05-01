@@ -2,12 +2,16 @@ package crypto.client;
 
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
+import crypto.util.BaseController;
 import crypto.util.ConverterChoices;
 import crypto.util.ConverterData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import me.joshmcfarlin.CryptoCompareAPI.Historic;
 import me.joshmcfarlin.CryptoCompareAPI.Market;
@@ -20,14 +24,18 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The controller for the ConverterView.
  *
  * @author Richard
  */
-public class ConverterViewController implements ConverterPaneListener {
+public class ConverterViewController extends BaseController implements ConverterPaneListener {
 
+	private MainController mainController;
+	
+	private boolean unsavedChanges;
 
 	@FXML
 	private VBox vBox;
@@ -60,6 +68,8 @@ public class ConverterViewController implements ConverterPaneListener {
 		while (iterator.hasNext()) {
 			addConverterPane(iterator.next());
 		}
+		
+		unsavedChanges = false;
 	}
 
 	/**
@@ -70,6 +80,7 @@ public class ConverterViewController implements ConverterPaneListener {
 		ConverterPane pane = new ConverterPane(currencies);
 		pane.addConverterPaneListener(this);
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
+		unsavedChanges = true;
 	}
 
 	/**
@@ -82,6 +93,7 @@ public class ConverterViewController implements ConverterPaneListener {
 		pane.addConverterPaneListener(this);
 		pane.setConverterData(data);
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
+		unsavedChanges = true;
 	}
 
 	/**
@@ -92,6 +104,7 @@ public class ConverterViewController implements ConverterPaneListener {
 	@Override
 	public void closeButtonClicked(ConverterPane pane) {
 		vBox.getChildren().remove(pane);
+		unsavedChanges = true;
 	}
 
 	/**
@@ -122,6 +135,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		unsavedChanges = true;
 	}
 
 	/**
@@ -152,6 +166,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		unsavedChanges = true;
 	}
 
 	/**
@@ -171,5 +186,40 @@ public class ConverterViewController implements ConverterPaneListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		unsavedChanges = false;
+	}
+	
+	/**
+	 * Sets the MainController of this controller.
+	 * @param main
+	 */
+	public void setMainController(MainController main) {
+		this.mainController = main;
+	}
+	
+	@Override
+	public void onClosing() {
+		if(unsavedChanges) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Unsaved Changes");
+			alert.setHeaderText("You have unsaved changes.");
+			alert.setContentText("Do you wish to save?");
+			
+			ButtonType buttonTypeYes = new ButtonType("Yes");
+			ButtonType buttonTypeNo = new ButtonType("No");
+			
+			alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+			
+			Optional<ButtonType> result = alert.showAndWait();
+			
+			if(result.get() == buttonTypeYes) {
+				saveData();
+			} 
+		}
+	}
+	
+	@Override
+	public void onChange() {
+		unsavedChanges = true;
 	}
 }

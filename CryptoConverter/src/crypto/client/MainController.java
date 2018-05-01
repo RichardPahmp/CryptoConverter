@@ -10,25 +10,31 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * The main class for the JavaFX project.
  * @author Richard
  *
  */
-public class MainApp extends Application {
+public class MainController extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private TabPane tabPane;
+	
+	private ConverterViewController converterController;
+	private GraphViewController graphController;
+	private RootLayoutController rootController;
 
 	/**
 	 * Called when javaFX has initialized
 	 */
 	@Override
-	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CryptoConverter");
+	public void start(Stage stage) {
+		primaryStage = stage;
+		primaryStage.setTitle("CryptoConverter");
+		primaryStage.setOnCloseRequest(this::onClose);
 
 		initRootLayout();
 	}
@@ -39,8 +45,10 @@ public class MainApp extends Application {
 	private void initRootLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
+			loader.setLocation(MainController.class.getResource("view/RootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
+			rootController = loader.getController();
+			rootController.setMainController(this);
 			tabPane = new TabPane();
 			rootLayout.setCenter(tabPane);
 
@@ -50,6 +58,8 @@ public class MainApp extends Application {
 			loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/ConverterView.fxml"));
 			conversionTab.setContent(loader.load());
+			converterController = loader.getController();
+			converterController.setMainController(this);
 			tabPane.getTabs().add(conversionTab);
 
 			//load the graph tab
@@ -58,6 +68,8 @@ public class MainApp extends Application {
 			loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/GraphView.fxml"));
 			graphTab.setContent(loader.load());
+			graphController = loader.getController();
+			graphController.setMainController(this);
 			tabPane.getTabs().add(graphTab);
 
 			Scene scene = new Scene(rootLayout);
@@ -78,6 +90,14 @@ public class MainApp extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void onClose(WindowEvent e) {
+		converterController.onClosing();
+	}
+	
+	public void onSave() {
+		converterController.saveData();
 	}
 
 	public static void main(String[] args) {

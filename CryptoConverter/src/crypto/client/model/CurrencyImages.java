@@ -20,6 +20,9 @@ public class CurrencyImages {
 	}
 	
 	public static void load(String symbol, String imageURL) {
+		if(imageURL == null) {
+			return;
+		}
 		try {
 			URL url = new URL(API_URL + imageURL);
 			URLConnection connection = url.openConnection();
