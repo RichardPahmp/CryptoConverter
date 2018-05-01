@@ -13,16 +13,26 @@ public class RootLayoutController {
 
 	private MainController mainController;
 	
+	
+	/**
+	 * Tell the program to save any changes when the save menu item is clicked.
+	 */
 	@FXML
 	private void handleSave() {
 		mainController.onSave();
 	}
 	
+	/**
+	 * Tell the program that it's closing.
+	 */
 	@FXML
 	private void handleClose() {
 		
 	}
 	
+	/**
+	 * Opens a window showing information about the program when the About menu item is clicked.
+	 */
 	@FXML
 	private void handleAbout() {
 		Alert alert = new Alert(AlertType.INFORMATION);

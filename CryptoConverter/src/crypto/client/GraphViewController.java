@@ -69,7 +69,7 @@ public class GraphViewController implements Initializable {
 	private DatePicker datePickerTo;
 
 	/**
-	 * Called by javaFX when the view has finished loading. Initializes the graph.
+	 * Called by javaFX when the view has finished loading. Initializes the graph and datepickers.
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -101,7 +101,7 @@ public class GraphViewController implements Initializable {
 	}
 
 	/**
-	 * Called when the Add-button is clicked
+	 * Called when the Add-button is clicked. Adds the selected currency to the listview.
 	 */
 	@FXML
 	private void onAddButtonClick() {
@@ -119,6 +119,13 @@ public class GraphViewController implements Initializable {
 		}
 	}
 
+	
+	/**
+	 * Creates a toggleButton and returns it.
+	 * @param currency
+	 * @param history
+	 * @return
+	 */
 	private ToggleButton createToggleButton(Currency currency, History history) {
 		Image image = CurrencyImages.get(currency.getSymbol(), currency.getImageUrl());
 		ToggleButton button = new ToggleButton(currency.getCoinFullName(), new ImageView(image));
