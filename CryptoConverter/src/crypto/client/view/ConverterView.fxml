@@ -9,7 +9,6 @@
    <content>
       <VBox fx:id="vBox" alignment="TOP_CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#saveData" text="Save" />
             <Button mnemonicParsing="false" onAction="#addConverterPane" text="Add" />
          </children>
       </VBox>

@@ -5,6 +5,7 @@ import crypto.client.model.CurrencyList;
 import crypto.util.BaseController;
 import crypto.util.ConverterChoices;
 import crypto.util.ConverterData;
+import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -125,8 +126,9 @@ public class ConverterViewController extends BaseController implements Converter
 				double coinValue = price.get(to.getSymbol());
 				pane.setRightTextfieldText(String.format("%.12f", coinValue * sum));
 			} else {
-				Map<String, Double> price = Historic.getPriceAtTime((int) date.toEpochSecond(LocalTime.now(), ZoneOffset.UTC), from.getSymbol(), to.getSymbol());
-				pane.setRightTextfieldText(price.get(to.getSymbol()).toString());
+				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
+				double coinValue = price.get(to.getSymbol());
+				pane.setRightTextfieldText(String.format("%.12f", coinValue * sum));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -156,8 +158,9 @@ public class ConverterViewController extends BaseController implements Converter
 				double coinValue = price.get(to.getSymbol());
 				pane.setLeftTextfieldText(String.format("%.12f", coinValue * sum));
 			} else {
-				Map<String, Double> price = Historic.getPriceAtTime((int) date.toEpochSecond(LocalTime.now(), ZoneOffset.UTC), from.getSymbol(), to.getSymbol());
-				pane.setLeftTextfieldText(price.get(to.getSymbol()).toString());
+				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
+				double coinValue = price.get(to.getSymbol());
+				pane.setLeftTextfieldText(String.format("%.12f", coinValue * sum));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
