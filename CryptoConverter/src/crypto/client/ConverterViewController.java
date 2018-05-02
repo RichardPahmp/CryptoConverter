@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import me.joshmcfarlin.CryptoCompareAPI.Historic;
 import me.joshmcfarlin.CryptoCompareAPI.Market;
@@ -72,7 +73,7 @@ public class ConverterViewController extends BaseController implements Converter
 		
 		unsavedChanges = false;
 	}
-
+	
 	/**
 	 * Creates a ConverterPane and adds it to the view.
 	 */
@@ -224,5 +225,23 @@ public class ConverterViewController extends BaseController implements Converter
 	@Override
 	public void onChange() {
 		unsavedChanges = true;
+	}
+
+	@Override
+	public void moveUp(ConverterPane pane) {
+		int index = vBox.getChildren().indexOf(pane);
+		if(index != 0) {
+			vBox.getChildren().remove(index);
+			vBox.getChildren().add(index - 1, pane);
+		}
+	}
+
+	@Override
+	public void moveDown(ConverterPane pane) {
+		int index = vBox.getChildren().indexOf(pane);
+		if(index != vBox.getChildren().size() - 2) {
+			vBox.getChildren().remove(index);
+			vBox.getChildren().add(index + 1, pane);
+		}
 	}
 }

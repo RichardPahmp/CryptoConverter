@@ -14,10 +14,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
 
 /**
@@ -31,6 +36,12 @@ public class ConverterPane extends HBox {
 
 	private ConverterPaneListener listener;
 
+	@FXML
+	private Button upArrowButton;
+	
+	@FXML
+	private Button downArrowButton;
+	
 	@FXML
 	private Button closeButton;
 
@@ -71,6 +82,24 @@ public class ConverterPane extends HBox {
 		rightComboBox.getItems().setAll(list);
 		selectCurrencyLeft(Config.DEFAULT_SYMBOL);
 		selectCurrencyRight(Config.DEFAULT_SYMBOL);
+		
+
+		
+		
+		leftComboBox.setCellFactory(createCellFactory());
+		leftComboBox.setButtonCell(createListCell());
+		rightComboBox.setCellFactory(createCellFactory());
+		rightComboBox.setButtonCell(createListCell());
+		
+		Image upArrowImage = new Image("file:files/images/UpArrow.png", 16, 16, true, true);
+		Image downArrowImage = new Image("file:files/images/DownArrow.png", 16, 16, true, true);
+		ImageView view = new ImageView(upArrowImage);
+		upArrowButton.setGraphic(view);
+		view = new ImageView(downArrowImage);
+		downArrowButton.setGraphic(view);
+		
+		upArrowButton.setOnAction(e -> listener.moveUp(this));
+		downArrowButton.setOnAction(e -> listener.moveDown(this));
 		
 		new SearchUtil<Currency>(leftComboBox);
 		new SearchUtil<Currency>(rightComboBox);
@@ -220,5 +249,33 @@ public class ConverterPane extends HBox {
 	 */
 	public void setRightTextfieldText(String text) {
 		rightTextField.setText(text);
+	}
+	
+	private Callback<ListView<Currency>, ListCell<Currency>> createCellFactory() {
+		return new Callback<ListView<Currency>, ListCell<Currency>>() {
+			@Override
+			public ListCell<Currency> call(ListView<Currency> arg0) {
+				return new ListCell<Currency>() {
+					@Override
+					protected void updateItem(Currency item, boolean empty) {
+						super.updateItem(item, empty);
+						if(item != null && !empty) {
+							setText(item.getCoinFullName());
+						}
+					}
+				};
+			}
+		};
+	}
+	
+	private ListCell<Currency> createListCell(){
+		return new ListCell<Currency>() {
+			protected void updateItem(Currency item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item != null && !empty) {
+					setText(item.getCoinName());
+				}
+			};
+		};
 	}
 }
