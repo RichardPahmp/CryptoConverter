@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyImages;
 import crypto.client.model.CurrencyList;
@@ -80,6 +81,12 @@ public class GraphViewController implements Initializable {
 		chart.setCreateSymbols(false);
 
 		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
+		for(Currency currency : comboBox.getItems()) {
+			if(currency.getSymbol().equals(Config.DEFAULT_SYMBOL)) {
+				comboBox.getSelectionModel().select(currency);
+				break;
+			}
+		}
 
 		datePickerFrom.setValue(LocalDate.now().minusMonths(1));
 		datePickerTo.setValue(LocalDate.now());

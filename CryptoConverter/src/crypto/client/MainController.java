@@ -2,6 +2,7 @@ package crypto.client;
 
 import java.io.IOException;
 
+import crypto.client.model.Config;
 import crypto.client.model.CurrencyList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,12 +21,14 @@ import javafx.stage.WindowEvent;
 public class MainController extends Application {
 
 	private Stage primaryStage;
+	private Stage settingsStage;
 	private BorderPane rootLayout;
 	private TabPane tabPane;
 	
 	private ConverterViewController converterController;
 	private GraphViewController graphController;
 	private RootLayoutController rootController;
+	private SettingsViewController settingsController;
 
 	/**
 	 * Called when javaFX has initialized
@@ -86,6 +89,7 @@ public class MainController extends Application {
 	public void init() throws Exception {
 		try {
 			CurrencyList.loadCurrencyList();
+			Config.loadFromDisk();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -93,11 +97,41 @@ public class MainController extends Application {
 	}
 	
 	public void onClose(WindowEvent e) {
+		if(settingsStage != null) {
+			if(settingsStage.isShowing()) {
+				settingsController.onClose();
+			}
+			settingsStage.close();
+		}
 		converterController.onClosing();
 	}
 	
 	public void onSave() {
 		converterController.saveData();
+	}
+	
+	public void closeApp() {
+		primaryStage.close();
+	}
+	
+	public void openSettings() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("view/SettingsView.fxml"));
+			
+			Scene scene = new Scene(loader.load(), 600, 400);
+			settingsController = loader.getController();
+			Stage stage = new Stage();
+			stage.setTitle("Settings");
+			stage.setScene(scene);
+			stage.initOwner(primaryStage);
+			stage.setOnCloseRequest(e -> settingsController.onClose());
+			stage.show();
+			settingsStage = stage;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {

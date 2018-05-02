@@ -3,6 +3,7 @@ package crypto.client;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.util.ConverterData;
 import crypto.util.Pair;
@@ -68,8 +69,8 @@ public class ConverterPane extends HBox {
 
 		leftComboBox.getItems().setAll(list);
 		rightComboBox.getItems().setAll(list);
-		leftComboBox.getSelectionModel().select(0);
-		rightComboBox.getSelectionModel().select(0);
+		selectCurrencyLeft(Config.DEFAULT_SYMBOL);
+		selectCurrencyRight(Config.DEFAULT_SYMBOL);
 		
 		new SearchUtil<Currency>(leftComboBox);
 		new SearchUtil<Currency>(rightComboBox);

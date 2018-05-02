@@ -1,6 +1,8 @@
 package crypto.client;
 
+import crypto.util.BaseController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -9,7 +11,7 @@ import javafx.scene.control.Alert.AlertType;
  * @author Richard
  *
  */
-public class RootLayoutController {
+public class RootLayoutController extends BaseController {
 
 	private MainController mainController;
 	
@@ -27,7 +29,12 @@ public class RootLayoutController {
 	 */
 	@FXML
 	private void handleClose() {
-		
+		mainController.closeApp();
+	}
+	
+	@FXML
+	private void handleSettings() {
+		mainController.openSettings();
 	}
 	
 	/**
