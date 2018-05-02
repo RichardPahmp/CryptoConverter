@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import crypto.client.model.Currency;
 import crypto.util.ConverterData;
 import crypto.util.Pair;
+import crypto.util.SearchUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,6 +70,9 @@ public class ConverterPane extends HBox {
 		rightComboBox.getItems().setAll(list);
 		leftComboBox.getSelectionModel().select(0);
 		rightComboBox.getSelectionModel().select(0);
+		
+		new SearchUtil<Currency>(leftComboBox);
+		new SearchUtil<Currency>(rightComboBox);
 		
 		leftComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
 		rightComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
