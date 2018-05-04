@@ -2,7 +2,6 @@ package crypto.client;
 
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
-import crypto.util.BaseController;
 import crypto.util.ConverterChoices;
 import crypto.util.ConverterData;
 import crypto.util.TimeUtil;
@@ -33,7 +32,7 @@ import java.util.Optional;
  *
  * @author Richard
  */
-public class ConverterViewController extends BaseController implements ConverterPaneListener {
+public class ConverterViewController implements ConverterPaneListener {
 
 	private MainController mainController;
 	
@@ -201,7 +200,6 @@ public class ConverterViewController extends BaseController implements Converter
 		this.mainController = main;
 	}
 	
-	@Override
 	public void onClosing() {
 		if(unsavedChanges) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);

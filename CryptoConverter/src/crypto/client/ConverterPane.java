@@ -178,11 +178,6 @@ public class ConverterPane extends HBox {
 				datePicker.getValue(), leftSum, rightSum);
 	}
 
-	@FXML
-	private void initialize() {
-
-	}
-
 	public void addConverterPaneListener(ConverterPaneListener listener) {
 		this.listener = listener;
 	}

@@ -22,8 +22,6 @@ public class MainController extends Application {
 
 	private Stage primaryStage;
 	private Stage settingsStage;
-	private BorderPane rootLayout;
-	private TabPane tabPane;
 	
 	private ConverterViewController converterController;
 	private GraphViewController graphController;
@@ -49,10 +47,10 @@ public class MainController extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainController.class.getResource("view/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+			BorderPane rootLayout = (BorderPane) loader.load();
 			rootController = loader.getController();
 			rootController.setMainController(this);
-			tabPane = new TabPane();
+			TabPane tabPane = new TabPane();
 			rootLayout.setCenter(tabPane);
 
 			//load the converter tab
