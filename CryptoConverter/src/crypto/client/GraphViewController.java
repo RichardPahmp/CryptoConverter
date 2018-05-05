@@ -11,6 +11,7 @@ import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyImages;
 import crypto.client.model.CurrencyList;
+import crypto.util.SearchUtil;
 import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,18 +94,7 @@ public class GraphViewController implements Initializable {
 		datePickerFrom.setOnAction(e -> onDateChanged());
 		datePickerTo.setOnAction(e -> onDateChanged());
 
-		/*
-		 * XYChart.Series series = new XYChart.Series();
-		 * 
-		 * try { History history = Historic.getDay("BTC", "USD", 200); for(History.Data
-		 * data : history.data) { LocalDate date = TimeUtil.timestampToDate(data.time *
-		 * 1000L); XYChart.Data chartData = new XYChart.Data(date.toString(),
-		 * data.open); //chartData.setNode(new HoverNode(data.close));
-		 * series.getData().add(chartData);
-		 * 
-		 * } chart.getData().add(series); } catch (IOException e) { e.printStackTrace();
-		 * } catch (OutOfCallsException e) { e.printStackTrace(); }
-		 */
+		new SearchUtil<>(comboBox);
 	}
 
 	/**
