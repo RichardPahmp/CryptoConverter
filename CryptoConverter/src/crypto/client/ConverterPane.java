@@ -83,9 +83,6 @@ public class ConverterPane extends HBox {
 		selectCurrencyLeft(Config.DEFAULT_SYMBOL);
 		selectCurrencyRight(Config.DEFAULT_SYMBOL);
 		
-
-		
-		
 		leftComboBox.setCellFactory(createCellFactory());
 		leftComboBox.setButtonCell(createListCell());
 		rightComboBox.setCellFactory(createCellFactory());
