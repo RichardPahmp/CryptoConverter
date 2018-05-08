@@ -1,5 +1,7 @@
 package crypto.client;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -21,7 +23,10 @@ import javafx.stage.Stage;
 public class SettingsViewController implements Initializable {
 	
 	@FXML
-	private ComboBox<Currency> comboBox;
+	private ComboBox<Currency> currencyComboBox;
+	
+	@FXML
+	private ComboBox<StyleListItem> styleComboBox;
 	
 	@FXML
 	private Slider slider;
@@ -31,16 +36,19 @@ public class SettingsViewController implements Initializable {
 	
 	private boolean unsavedChanges = false;
 	
+	private MainController mainController;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
-		comboBox.getItems().setAll(CurrencyList.getCurrencyList());
-		for(Currency currency : comboBox.getItems()) {
+		currencyComboBox.getItems().setAll(CurrencyList.getCurrencyList());
+		for(Currency currency : currencyComboBox.getItems()) {
 			if(currency.getSymbol().equals(Config.DEFAULT_SYMBOL)) {
-				comboBox.getSelectionModel().select(currency);
+				currencyComboBox.getSelectionModel().select(currency);
 				break;
 			}
 		}
+		
+		populateStyleComboBox();
 		
 		slider.setValue(Config.LIVE_FEED_RATE);
 		slider.setMin(5);
@@ -50,13 +58,34 @@ public class SettingsViewController implements Initializable {
 		
 		sliderLabel.setText((int)slider.getValue() + "");
 		
-		comboBox.selectionModelProperty().addListener((obs, oldV, newV) -> onComboBoxChange());
+		currencyComboBox.selectionModelProperty().addListener((obs, oldV, newV) -> onComboBoxChange());
 		slider.valueProperty().addListener((obs, oldV, newV) -> onSliderChange());
+	}
+	
+	private void populateStyleComboBox() {
+		File folder = new File("files/css");
+		File[] fileList = folder.listFiles();
+		for(File file : fileList) {
+			try {
+				StyleListItem item = new StyleListItem(file.getName(), file.toURI().toURL().toExternalForm());
+				styleComboBox.getItems().add(item);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		styleComboBox.getSelectionModel().select(0);
+	}
+	
+	@FXML
+	private void onApply() {
+		applyChanges();
+		Config.saveToDisk();
 	}
 
 	@FXML
 	private void onSave() {
-		saveChanges();
+		applyChanges();
 		Config.saveToDisk();
 		closeWindow();
 	}
@@ -68,7 +97,7 @@ public class SettingsViewController implements Initializable {
 	}
 	
 	private void closeWindow() {
-		Stage stage =(Stage) comboBox.getScene().getWindow();
+		Stage stage =(Stage) currencyComboBox.getScene().getWindow();
 		stage.close();
 	}
 	
@@ -81,9 +110,14 @@ public class SettingsViewController implements Initializable {
 		unsavedChanges = true;
 	}
 	
-	private void saveChanges() {
+	private void applyChanges() {
+		StyleListItem item = styleComboBox.getValue();
+		if(item != null) {
+			mainController.changeStyle(item.urlString);
+		}
+		
 		Config.LIVE_FEED_RATE = (int)slider.getValue();
-		Config.DEFAULT_SYMBOL = comboBox.getValue().getSymbol();
+		Config.DEFAULT_SYMBOL = currencyComboBox.getValue().getSymbol();
 		unsavedChanges = false;
 	}
 	
@@ -102,8 +136,26 @@ public class SettingsViewController implements Initializable {
 			Optional<ButtonType> result = alert.showAndWait();
 			
 			if(result.get() == buttonTypeYes) {
-				saveChanges();
+				applyChanges();
 			}
+		}
+	}
+	
+	public void setMainController(MainController controller) {
+		this.mainController = controller;
+	}
+	
+	private class StyleListItem {
+		private String name;
+		private String urlString;
+		
+		public StyleListItem(String name, String URL) {
+			this.name = name;
+			this.urlString = URL;
+		}
+		
+		public String toString() {
+			return name;
 		}
 	}
 	

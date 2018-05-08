@@ -30,7 +30,7 @@
          <children>
             <Label text="Default currency for all currency choices:" />
             <Label text="Frequency of live-feed updates (in seconds):" GridPane.rowIndex="1" />
-            <ComboBox fx:id="comboBox" prefWidth="150.0" GridPane.columnIndex="1" />
+            <ComboBox fx:id="currencyComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
             <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Slider fx:id="slider" max="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" snapToTicks="true" HBox.hgrow="ALWAYS">
@@ -45,11 +45,14 @@
                   </Label>
                </children>
             </HBox>
+            <Label text="Set the style for the application:" GridPane.rowIndex="2" />
+            <ComboBox fx:id="styleComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
       <ButtonBar layoutX="386.0" layoutY="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <buttons>
             <Button mnemonicParsing="false" onAction="#onSave" text="Save" />
+            <Button mnemonicParsing="false" onAction="#onApply" text="Apply" />
           <Button mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
         </buttons>
          <padding>

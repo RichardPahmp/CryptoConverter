@@ -1,6 +1,9 @@
 package crypto.client;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.URL;
 
 import crypto.client.model.Config;
 import crypto.client.model.CurrencyList;
@@ -22,6 +25,9 @@ public class MainController extends Application {
 
 	private Stage primaryStage;
 	private Stage settingsStage;
+	
+	private Scene primaryScene;
+	private Scene settingsScene;
 	
 	private ConverterViewController converterController;
 	private GraphViewController graphController;
@@ -73,8 +79,8 @@ public class MainController extends Application {
 			graphController.setMainController(this);
 			tabPane.getTabs().add(graphTab);
 
-			Scene scene = new Scene(rootLayout);
-			primaryStage.setScene(scene);
+			primaryScene = new Scene(rootLayout);
+			primaryStage.setScene(primaryScene);
 			primaryStage.show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -112,16 +118,24 @@ public class MainController extends Application {
 		primaryStage.close();
 	}
 	
+	public void changeStyle(String css) {
+		primaryScene.getStylesheets().clear();
+		primaryScene.getStylesheets().add(css);
+		settingsScene.getStylesheets().clear();
+		settingsScene.getStylesheets().add(css);
+	}
+	
 	public void openSettings() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/SettingsView.fxml"));
 			
-			Scene scene = new Scene(loader.load(), 600, 400);
+			settingsScene = new Scene(loader.load(), 600, 400);
 			settingsController = loader.getController();
+			settingsController.setMainController(this);
 			Stage stage = new Stage();
 			stage.setTitle("Settings");
-			stage.setScene(scene);
+			stage.setScene(settingsScene);
 			stage.initOwner(primaryStage);
 			stage.setOnCloseRequest(e -> settingsController.onClose());
 			stage.show();
