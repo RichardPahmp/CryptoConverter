@@ -27,6 +27,7 @@ public class DatabaseConnection {
 	private PreparedStatement getSearchesStatement;
 	private PreparedStatement getAllSearchesStatement;
 	private PreparedStatement searchesRowExists;
+	private PreparedStatement verifyLoginStatement;
 	
 	public DatabaseConnection() throws SQLException {
 		Properties props = new Properties();
@@ -36,6 +37,7 @@ public class DatabaseConnection {
 		connection.setAutoCommit(false);
 		
 		createUserStatement = connection.prepareStatement("insert into " + dbName + "." + USERS_TABLE + " (USERNAME, PASSWORD) values (?, ?)", Statement.RETURN_GENERATED_KEYS);
+		verifyLoginStatement = connection.prepareStatement("SELECT PASSWORD FROM " + dbName + "." + USERS_TABLE + " WHERE (USERNAME = ?)");
 		incrementSearchesStatement = connection.prepareStatement("UPDATE " + dbName + "." + SEARCHES_TABLE + " SET SEARCHES = SEARCHES + 1 WHERE (ID = ? AND SYMBOL = ?)");
 		insertSearchesStatement = connection.prepareStatement("INSERT INTO " + dbName + "." + SEARCHES_TABLE + " (ID, SYMBOL) VALUES (?, ?)");
 		getSearchesStatement = connection.prepareStatement("SELECT SYMBOL, SEARCHES FROM " + dbName + "." + SEARCHES_TABLE + " WHERE id = ?");
@@ -58,6 +60,26 @@ public class DatabaseConnection {
 		if(generatedKeys.next()) {
 			System.out.println(generatedKeys.getInt(1));
 		}
+	}
+	
+	/**
+	 * Returns if the given user and password combo exists in the database.
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean verifyLogin(String username, String password) throws SQLException {
+		boolean verified = false;
+		verifyLoginStatement.setString(1, username);
+		ResultSet results = verifyLoginStatement.executeQuery();
+		if(results.next()) {
+			String pass = results.getString(1);
+			if(pass.equals(password)) {
+				verified = true;
+			}
+		}
+		return verified;
 	}
 	
 	/**
