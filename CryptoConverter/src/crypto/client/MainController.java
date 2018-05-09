@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.URL;
+import java.util.HashMap;
 
 import crypto.client.model.Config;
 import crypto.client.model.CurrencyList;
@@ -125,6 +126,26 @@ public class MainController extends Application {
 		primaryScene.getStylesheets().add(css);
 		settingsScene.getStylesheets().clear();
 		settingsScene.getStylesheets().add(css);
+	}
+	
+	public void onLoginSuccess() {
+		
+	}
+	
+	public void onRegisterSuccess() {
+		
+	}
+	
+	public void onRegisterFailed() {
+		
+	}
+	
+	public void onUserDataReceived(HashMap<String, Integer> map) {
+		
+	}
+	
+	public void onAllUserDataReceived(HashMap<String, Integer> map) {
+		
 	}
 	
 	public void openSettings() {
