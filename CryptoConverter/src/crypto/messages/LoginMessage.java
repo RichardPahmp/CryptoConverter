@@ -1,6 +1,8 @@
 package crypto.messages;
 
-public class LoginMessage {
+import java.io.Serializable;
+
+public class LoginMessage implements Serializable{
 	
 	private String username;
 	private String password;

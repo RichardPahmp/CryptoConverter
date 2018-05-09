@@ -1,5 +1,7 @@
 package crypto.messages;
 
-public class LoginFailedMessage {
+import java.io.Serializable;
+
+public class LoginFailedMessage implements Serializable {
 
 }

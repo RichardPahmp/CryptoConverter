@@ -32,9 +32,9 @@ public class ServerConnection {
 	
 	public void connect() {
 		try {
-			socket = new Socket("localhost", 1337);
-			ois = new ObjectInputStream(socket.getInputStream());
+			socket = new Socket("localhost", 3280);
 			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
 			new Thread(this::run).start();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block

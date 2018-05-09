@@ -1,8 +1,9 @@
 package crypto.messages;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class UserDataMessage {
+public class UserDataMessage implements Serializable {
 	private HashMap<String, Integer> map;
 	
 	public UserDataMessage(HashMap<String, Integer> map) {

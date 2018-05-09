@@ -1,5 +1,7 @@
 package crypto.messages;
 
-public class RegisterFailedMessage {
+import java.io.Serializable;
+
+public class RegisterFailedMessage implements Serializable {
 
 }

@@ -1,5 +1,7 @@
 package crypto.messages;
 
-public class RequestUserDataMessage {
+import java.io.Serializable;
+
+public class RequestUserDataMessage implements Serializable {
 
 }

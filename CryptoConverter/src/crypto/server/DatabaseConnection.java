@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import me.joshmcfarlin.CryptoCompareAPI.Market;
+
 public class DatabaseConnection {
 
 	private static String dbName = "CryptoConverterDB";
@@ -158,7 +160,7 @@ public class DatabaseConnection {
 	public static void main(String[] args) {
 		try {
 			DatabaseConnection db = new DatabaseConnection();
-			System.out.println(db.verifyLogin("Richard", "Pahmp"));
+//			System.out.println(db.verifyLogin("Richard", "Pahmp"));
 //			db.createNewUser("Emil2", "Ogge");
 //			System.out.println(db.verifyLogin("Emil2", "Ogge"));
 //			db.incrementSearchHistory(1, "USD");

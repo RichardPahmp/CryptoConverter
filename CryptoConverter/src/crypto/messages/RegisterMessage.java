@@ -1,6 +1,8 @@
 package crypto.messages;
 
-public class RegisterMessage {
+import java.io.Serializable;
+
+public class RegisterMessage implements Serializable {
 	
 	private String username;
 	private String password;

@@ -21,7 +21,7 @@ import crypto.messages.UserDataMessage;
 /**
  * Serverside connection to a client.
  * 
- * @author Emil Ögge
+ * @author Emil ï¿½gge
  *
  */
 public class ClientHandler extends Thread {
@@ -38,89 +38,86 @@ public class ClientHandler extends Thread {
 	}
 
 	public void run() {
-		Object obj = null;
-		try {
-			obj = ois.readObject();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		while (true) {
-			if (obj instanceof LoginMessage) {
-				LoginMessage message = (LoginMessage) obj;
-				String user = message.getUsername();
-				String pass = message.getPassword();
+			try {
+
+				Object obj = null;
 				try {
-					int n = db.verifyLogin(user, pass);
-					if (n == -1) {
+					obj = ois.readObject();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				if (obj instanceof LoginMessage) {
+					LoginMessage message = (LoginMessage) obj;
+					String user = message.getUsername();
+					String pass = message.getPassword();
+					try {
+						int n = db.verifyLogin(user, pass);
+						if (n == -1) {
+							LoginFailedMessage tempMess = new LoginFailedMessage();
+							oos.writeObject(tempMess);
+							oos.flush();
+						} else {
+							LoginSuccessfulMessage tempMess = new LoginSuccessfulMessage();
+							oos.writeObject(tempMess);
+							oos.flush();
+						}
+					} catch (SQLException e) {
 						LoginFailedMessage tempMess = new LoginFailedMessage();
 						oos.writeObject(tempMess);
 						oos.flush();
 					}
-				} catch (SQLException e) {
-					LoginFailedMessage tempMess = new LoginFailedMessage();
+				} else if (obj instanceof RegisterMessage) {
+					RegisterMessage message = (RegisterMessage) obj;
 					try {
+						db.createNewUser(message.getUsername(), message.getPassword());
+						RegisterSuccessfulMessage tempMess = new RegisterSuccessfulMessage();
 						oos.writeObject(tempMess);
 						oos.flush();
-					} catch (IOException e1) {
-						e1.printStackTrace();
+					} catch (SQLException e) {
+						RegisterFailedMessage tempMess = new RegisterFailedMessage();
+						try {
+							oos.writeObject(tempMess);
+							oos.flush();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (obj instanceof RegisterMessage) {
-				RegisterMessage message = (RegisterMessage) obj;
-				try {
-					db.createNewUser(message.getUsername(), message.getPassword());
-					RegisterSuccessfulMessage tempMess = new RegisterSuccessfulMessage(); 
-					oos.writeObject(tempMess);
-					oos.flush();
-				} catch (SQLException e) {
-					RegisterFailedMessage tempMess = new RegisterFailedMessage();
+				} else if (obj instanceof RequestAllUserDataMessage) {
 					try {
+						HashMap<String, Integer> map = db.getAllSearches();
+						AllUserDataMessage tempMess = new AllUserDataMessage(map);
 						oos.writeObject(tempMess);
 						oos.flush();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (obj instanceof RequestAllUserDataMessage) {
-				try {
-					HashMap<String, Integer> map = db.getAllSearches();
-					AllUserDataMessage tempMess = new AllUserDataMessage(map);
-					oos.writeObject(tempMess);
-					oos.flush();
-				} catch (SQLException e) {
-					e.printStackTrace();
-					System.out.println(e.getMessage());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (obj instanceof RequestUserDataMessage) {
-				try {
-					HashMap<String, Integer> map = db.getSearches(id);
-					UserDataMessage tempMess = new UserDataMessage(map);
-					oos.writeObject(tempMess);
-					oos.flush();
-				} catch (SQLException e) {
-					e.printStackTrace();
-					System.out.println(e.getMessage());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (obj instanceof SearchMessage) {
-				String[] symbols = ((SearchMessage)obj).getSymbols();
-				for(String str : symbols) {
-					try {
-						db.incrementSearchHistory(id, str);
 					} catch (SQLException e) {
 						e.printStackTrace();
+						System.out.println(e.getMessage());
+					}
+				} else if (obj instanceof RequestUserDataMessage) {
+					try {
+						HashMap<String, Integer> map = db.getSearches(id);
+						UserDataMessage tempMess = new UserDataMessage(map);
+						oos.writeObject(tempMess);
+						oos.flush();
+					} catch (SQLException e) {
+						e.printStackTrace();
+						System.out.println(e.getMessage());
+					}
+				} else if (obj instanceof SearchMessage) {
+					String[] symbols = ((SearchMessage) obj).getSymbols();
+					for (String str : symbols) {
+						try {
+							db.incrementSearchHistory(id, str);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
 					}
 				}
+			} catch (IOException e) {
+				break;
 			}
 		}
 	}

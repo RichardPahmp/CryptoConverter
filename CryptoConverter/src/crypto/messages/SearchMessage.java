@@ -1,6 +1,8 @@
 package crypto.messages;
 
-public class SearchMessage {
+import java.io.Serializable;
+
+public class SearchMessage implements Serializable {
 	
 	private String[] symbols;
 	
