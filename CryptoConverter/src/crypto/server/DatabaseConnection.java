@@ -37,7 +37,7 @@ public class DatabaseConnection {
 		connection.setAutoCommit(false);
 		
 		createUserStatement = connection.prepareStatement("insert into " + dbName + "." + USERS_TABLE + " (USERNAME, PASSWORD) values (?, ?)", Statement.RETURN_GENERATED_KEYS);
-		verifyLoginStatement = connection.prepareStatement("SELECT PASSWORD FROM " + dbName + "." + USERS_TABLE + " WHERE (USERNAME = ?)");
+		verifyLoginStatement = connection.prepareStatement("SELECT ID, PASSWORD FROM " + dbName + "." + USERS_TABLE + " WHERE (USERNAME = ?)");
 		incrementSearchesStatement = connection.prepareStatement("UPDATE " + dbName + "." + SEARCHES_TABLE + " SET SEARCHES = SEARCHES + 1 WHERE (ID = ? AND SYMBOL = ?)");
 		insertSearchesStatement = connection.prepareStatement("INSERT INTO " + dbName + "." + SEARCHES_TABLE + " (ID, SYMBOL) VALUES (?, ?)");
 		getSearchesStatement = connection.prepareStatement("SELECT SYMBOL, SEARCHES FROM " + dbName + "." + SEARCHES_TABLE + " WHERE id = ?");
@@ -72,17 +72,17 @@ public class DatabaseConnection {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean verifyLogin(String username, String password) throws SQLException {
-		boolean verified = false;
+	public int verifyLogin(String username, String password) throws SQLException {
 		verifyLoginStatement.setString(1, username);
 		ResultSet results = verifyLoginStatement.executeQuery();
 		if(results.next()) {
-			String pass = results.getString(1);
+			int id = results.getInt(1);
+			String pass = results.getString(2);
 			if(pass.equals(password)) {
-				verified = true;
+				return id;
 			}
 		}
-		return verified;
+		return -1;
 	}
 	
 	/**
@@ -158,6 +158,9 @@ public class DatabaseConnection {
 	public static void main(String[] args) {
 		try {
 			DatabaseConnection db = new DatabaseConnection();
+			System.out.println(db.verifyLogin("Richard", "Pahmp"));
+//			db.createNewUser("Emil2", "Ogge");
+//			System.out.println(db.verifyLogin("Emil2", "Ogge"));
 //			db.incrementSearchHistory(1, "USD");
 //			db.createNewUser("Richard", "Pahmp");
 //			db.createNewUser("Richard2", "Pahmp2");
