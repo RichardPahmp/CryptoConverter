@@ -49,9 +49,10 @@ public class DatabaseConnection {
 	 * Creates a new user in the database.
 	 * @param username
 	 * @param password
+	 * @return The id of the created user. returns -1 if no id was returned from the database.
 	 * @throws SQLException
 	 */
-	public void createNewUser(String username, String password) throws SQLException {
+	public int createNewUser(String username, String password) throws SQLException {
 		createUserStatement.setString(1, username);
 		createUserStatement.setString(2, password);
 		createUserStatement.executeUpdate();
@@ -59,7 +60,9 @@ public class DatabaseConnection {
 		ResultSet generatedKeys = createUserStatement.getGeneratedKeys();
 		if(generatedKeys.next()) {
 			System.out.println(generatedKeys.getInt(1));
+			return generatedKeys.getInt(1);
 		}
+		return -1;
 	}
 	
 	/**

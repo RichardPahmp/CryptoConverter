@@ -36,6 +36,7 @@ public class MainController extends Application {
 	private RootLayoutController rootController;
 	private SettingsViewController settingsController;
 	private RegisterViewController registerController;
+	private LivefeedViewController livefeedController;
 
 	/**
 	 * Called when javaFX has initialized
@@ -81,6 +82,16 @@ public class MainController extends Application {
 			graphController = loader.getController();
 			graphController.setMainController(this);
 			tabPane.getTabs().add(graphTab);
+			
+			//load the livefeed tab
+			Tab liveTab = new Tab("Live");
+			liveTab.setClosable(false);
+			loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("view/LivefeedView.fxml"));
+			liveTab.setContent(loader.load());
+			livefeedController = loader.getController();
+			livefeedController.setMainController(this);
+			tabPane.getTabs().add(liveTab);
 
 			primaryScene = new Scene(rootLayout);
 			primaryStage.setScene(primaryScene);
