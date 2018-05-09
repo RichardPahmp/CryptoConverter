@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -33,6 +34,7 @@ public class MainController extends Application {
 	private GraphViewController graphController;
 	private RootLayoutController rootController;
 	private SettingsViewController settingsController;
+	private RegisterViewController registerController;
 
 	/**
 	 * Called when javaFX has initialized
@@ -136,10 +138,31 @@ public class MainController extends Application {
 			Stage stage = new Stage();
 			stage.setTitle("Settings");
 			stage.setScene(settingsScene);
+			stage.initModality(Modality.WINDOW_MODAL);
 			stage.initOwner(primaryStage);
 			stage.setOnCloseRequest(e -> settingsController.onClose());
 			stage.show();
 			settingsStage = stage;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void openRegister() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("view/RegisterView.fxml"));
+			
+			Scene scene = new Scene(loader.load(), 300, 300);
+			registerController = loader.getController();
+			registerController.setMainController(this);
+			Stage stage = new Stage();
+			stage.setTitle("Register");
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.setScene(scene);
+			stage.initOwner(primaryStage);
+			stage.show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

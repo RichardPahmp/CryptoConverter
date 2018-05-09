@@ -1,4 +1,4 @@
-package crypto.server.messages;
+package crypto.messages;
 
 import java.util.HashMap;
 

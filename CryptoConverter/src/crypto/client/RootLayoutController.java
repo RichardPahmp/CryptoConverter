@@ -3,17 +3,45 @@ package crypto.client;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.HBox;
 
 /**
  * The controller for the root layout. Primarily controls the menu bar at the top of the application.
  * @author Richard
  *
  */
-public class RootLayoutController {
+public class RootLayoutController{
 
 	private MainController mainController;
 	
+	@FXML
+	private HBox loginBox;
+	
+	@FXML
+	private HBox logoutBox;
+	
+	@FXML
+	private Label loginLabel;
+	
+	
+	@FXML
+	private void onLogin() {
+		logoutBox.setVisible(true);
+		loginBox.setVisible(false);
+	}
+	
+	@FXML
+	private void onLogout() {
+		logoutBox.setVisible(false);
+		loginBox.setVisible(true);
+	}
+	
+	@FXML
+	private void onRegister() {
+		mainController.openRegister();
+	}
 	
 	/**
 	 * Tell the program to save any changes when the save menu item is clicked.
