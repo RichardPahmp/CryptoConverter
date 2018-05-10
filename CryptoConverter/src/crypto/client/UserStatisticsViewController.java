@@ -9,6 +9,8 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
@@ -49,6 +51,7 @@ public class UserStatisticsViewController implements Initializable {
 				updateData();
 			}
 		});
+		choiceBox.getSelectionModel().select(0);
 	}
 	
 	private void showData(HashMap<String, Integer> map) {
@@ -64,10 +67,31 @@ public class UserStatisticsViewController implements Initializable {
 						biggestSymbol = str;
 					}
 				}
+				
+				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+				int showLimit = totalSearches / 10;
+				int others = 0;
+				
+				for(String str : map.keySet()) {
+					if(map.get(str) > showLimit) {
+						pieChartData.add(createPieChartData(str, map.get(str)));
+					} else {
+						others += map.get(str);
+					}
+				}
+				pieChartData.add(new PieChart.Data("Others", others));
+				pieChart.setData(pieChartData);
+				
 				numberLabel.setText(totalSearches+"");
 				favoriteLabel.setText(biggestSymbol);
+				
 			});
 		}
+	}
+	
+	private PieChart.Data createPieChartData(String name, int num) {
+		PieChart.Data data = new PieChart.Data(name, num);
+		return data;
 	}
 	
 	private void updateData() {
@@ -99,6 +123,8 @@ public class UserStatisticsViewController implements Initializable {
 	
 	public void setMainController(MainController controller) {
 		this.mainController = controller;
+		mainController.requestAllUserData();
+		mainController.requestUserData();
 	}
 	
 }
