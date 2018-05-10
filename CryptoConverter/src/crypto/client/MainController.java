@@ -9,10 +9,13 @@ import java.util.HashMap;
 import crypto.client.model.Config;
 import crypto.client.model.CurrencyList;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -37,6 +40,12 @@ public class MainController extends Application {
 	private SettingsViewController settingsController;
 	private RegisterViewController registerController;
 	private LivefeedViewController livefeedController;
+	private UserStatisticsViewController userStatsController;
+	
+	private ServerConnection serverConnection;
+	
+	private TabPane tabPane;
+	private Tab userDataTab;
 
 	/**
 	 * Called when javaFX has initialized
@@ -48,6 +57,10 @@ public class MainController extends Application {
 		primaryStage.setOnCloseRequest(this::onClose);
 
 		initRootLayout();
+		
+		serverConnection = new ServerConnection(this);
+		
+		new Thread(this::tryConnect).start();
 	}
 
 	/**
@@ -60,7 +73,7 @@ public class MainController extends Application {
 			BorderPane rootLayout = (BorderPane) loader.load();
 			rootController = loader.getController();
 			rootController.setMainController(this);
-			TabPane tabPane = new TabPane();
+			tabPane = new TabPane();
 			rootLayout.setCenter(tabPane);
 
 			//load the converter tab
@@ -114,7 +127,24 @@ public class MainController extends Application {
 		}
 	}
 	
+	private void addUserDataTab() {
+		userDataTab = new Tab("User data");
+		userDataTab.setClosable(false);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("view/UserStatisticsView.fxml"));
+		try {
+			userDataTab.setContent(loader.load());
+			userStatsController = loader.getController();
+			userStatsController.setMainController(this);
+			Platform.runLater(() -> tabPane.getTabs().add(userDataTab));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void onClose(WindowEvent e) {
+		serverConnection.disconnect();
 		if(settingsStage != null) {
 			if(settingsStage.isShowing()) {
 				settingsController.onClose();
@@ -139,24 +169,79 @@ public class MainController extends Application {
 		settingsScene.getStylesheets().add(css);
 	}
 	
-	public void onLoginSuccess() {
-		
+	public void tryConnect() {
+		if(serverConnection.connect()) {
+			rootController.setConnectionAvailible();
+		} else {
+			rootController.setNoConnection();
+		}
+	}
+	
+	public void onLoginSuccess(String username) {
+		rootController.setLoggedInAs(username);
+		rootController.showLogout();
+		addUserDataTab();
+	}
+	
+	public void onLoginFailed() {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Failed to login");
+			alert.setHeaderText("Failed to login");
+			alert.setContentText("Wrong username, password or both");
+			alert.showAndWait();
+		});
+	}
+	
+	public void onDisconnect() {
+		rootController.showLogin();
+		if(userDataTab != null) {
+			Platform.runLater(() -> tabPane.getTabs().remove(userDataTab));
+		}
 	}
 	
 	public void onRegisterSuccess() {
-		
+		registerController.registerSuccessful();
 	}
 	
 	public void onRegisterFailed() {
-		
+		registerController.registerFailed();
+	}
+	
+	public void register(String username, String password) {
+		serverConnection.connect();
+		serverConnection.register(username, password);
+	}
+	
+	public void login(String username, String password) {
+		serverConnection.connect();
+		serverConnection.login(username, password);
+	}
+	
+	public void logout() {
+		serverConnection.disconnect();
+	}
+	
+	public void onSearch(String[] symbols) {
+		if(serverConnection.isConnected()) {
+			serverConnection.newSearch(symbols);
+		}
+	}
+	
+	public void requestUserData(){
+		serverConnection.requestUserData();
+	}
+	
+	public void requestAllUserData(){
+		serverConnection.requestAllUserData();
 	}
 	
 	public void onUserDataReceived(HashMap<String, Integer> map) {
-		
+		userStatsController.putUserData(map);
 	}
 	
 	public void onAllUserDataReceived(HashMap<String, Integer> map) {
-		
+		userStatsController.putAllUserData(map);
 	}
 	
 	public void openSettings() {

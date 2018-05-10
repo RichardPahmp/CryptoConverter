@@ -8,16 +8,15 @@ import java.net.Socket;
 import java.sql.SQLException;
 
 public class CryptoServer {
-	private DatabaseConnection connection;
+	private DatabaseConnection databaseConnection;
 	private ServerSocket serverSocket;
 
 	public CryptoServer(int port) {
 		try {
 			serverSocket = new ServerSocket(port);
 			try {
-				connection = new DatabaseConnection();
+				databaseConnection = new DatabaseConnection();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			start();
@@ -30,27 +29,10 @@ public class CryptoServer {
 		try {
 			while (true) {
 				Socket socket = serverSocket.accept();
-				new ConnectionHandler(socket).start();
+				new ClientHandler(socket, databaseConnection).start();
 			}
-		} catch (Exception e) { }
-	}
-
-	private class ConnectionHandler extends Thread {
-		private Socket socket;
-
-		public ConnectionHandler(Socket socket) {
-			this.socket = socket;
-		}
-
-		public void run() {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-				ClientHandler client = new ClientHandler(ois, oos, connection);
-			    client.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) { 
+			e.printStackTrace();
 		}
 	}
 	

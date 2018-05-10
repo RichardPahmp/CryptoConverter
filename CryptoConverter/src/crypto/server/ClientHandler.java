@@ -3,6 +3,7 @@ package crypto.server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -10,6 +11,7 @@ import crypto.messages.AllUserDataMessage;
 import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
+import crypto.messages.LogoutMessage;
 import crypto.messages.RegisterFailedMessage;
 import crypto.messages.RegisterMessage;
 import crypto.messages.RegisterSuccessfulMessage;
@@ -25,20 +27,31 @@ import crypto.messages.UserDataMessage;
  *
  */
 public class ClientHandler extends Thread {
+	
+	private Socket socket;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private DatabaseConnection db;
 
+	private boolean isAlive = false;
+	
 	private int id;
 
-	public ClientHandler(ObjectInputStream ois, ObjectOutputStream oos, DatabaseConnection db) {
-		this.ois = ois;
-		this.oos = oos;
+	public ClientHandler(Socket socket, DatabaseConnection db) {
+		this.socket = socket;
+		try {
+			ois = new ObjectInputStream(socket.getInputStream());
+			oos = new ObjectOutputStream(socket.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		isAlive = true;
 		this.db = db;
 	}
 
 	public void run() {
-		while (true) {
+		while (isAlive) {
 			try {
 
 				Object obj = null;
@@ -48,6 +61,8 @@ public class ClientHandler extends Thread {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+					socket.close();
+					isAlive = false;
 				}
 
 				if (obj instanceof LoginMessage) {
@@ -55,13 +70,14 @@ public class ClientHandler extends Thread {
 					String user = message.getUsername();
 					String pass = message.getPassword();
 					try {
-						int n = db.verifyLogin(user, pass);
-						if (n == -1) {
+						int tempID = db.verifyLogin(user, pass);
+						if (tempID == -1) {
 							LoginFailedMessage tempMess = new LoginFailedMessage();
 							oos.writeObject(tempMess);
 							oos.flush();
 						} else {
-							LoginSuccessfulMessage tempMess = new LoginSuccessfulMessage();
+							this.id = tempID;
+							LoginSuccessfulMessage tempMess = new LoginSuccessfulMessage(user);
 							oos.writeObject(tempMess);
 							oos.flush();
 						}
@@ -79,12 +95,8 @@ public class ClientHandler extends Thread {
 						oos.flush();
 					} catch (SQLException e) {
 						RegisterFailedMessage tempMess = new RegisterFailedMessage();
-						try {
-							oos.writeObject(tempMess);
-							oos.flush();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						oos.writeObject(tempMess);
+						oos.flush();
 					}
 				} else if (obj instanceof RequestAllUserDataMessage) {
 					try {
@@ -115,10 +127,17 @@ public class ClientHandler extends Thread {
 							e.printStackTrace();
 						}
 					}
+				} else if (obj instanceof LogoutMessage) {
+					isAlive = false;
 				}
 			} catch (IOException e) {
-				break;
-			}
+				isAlive = false;
+			} 
+		}
+		try {
+			socket.close();
+		} catch (IOException e) {
+			
 		}
 	}
 }

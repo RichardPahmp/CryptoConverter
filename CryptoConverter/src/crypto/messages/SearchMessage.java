@@ -17,6 +17,10 @@ public class SearchMessage implements Serializable {
 		symbols[1] = symbol2;
 	}
 	
+	public SearchMessage(String[] symbols) {
+		this.symbols = symbols;
+	}
+	
 	public String[] getSymbols() {
 		return symbols;
 	}

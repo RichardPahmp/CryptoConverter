@@ -1,9 +1,12 @@
 package crypto.client;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 
@@ -13,6 +16,10 @@ import javafx.scene.layout.HBox;
  *
  */
 public class RootLayoutController{
+	
+	private static String LOGIN_STRING = "Enter your username and password to login or register a new account.";
+	private static String LOGGED_IN_STRING = "You are logged in as: ";
+	private static String NO_CONNECTION_STRING = "Could connect to the server, please try again later.";
 
 	private MainController mainController;
 	
@@ -23,19 +30,49 @@ public class RootLayoutController{
 	private HBox logoutBox;
 	
 	@FXML
+	private HBox retryBox;
+	
+	@FXML
 	private Label loginLabel;
 	
+	@FXML
+	private TextField usernameTextfield;
+	
+	@FXML
+	private PasswordField passwordField;
+	
+	public void showLogin() {
+		logoutBox.setVisible(false);
+		loginBox.setVisible(true);
+		retryBox.setVisible(false);
+	}
+	
+	public void showLogout() {
+		logoutBox.setVisible(true);
+		loginBox.setVisible(false);
+		retryBox.setVisible(false);
+	}
+	
+	public void showRetry() {
+		logoutBox.setVisible(false);
+		loginBox.setVisible(false);
+		retryBox.setVisible(true);
+	}
+	
+	@FXML
+	private void onRetry() {
+		mainController.tryConnect();
+	}
 	
 	@FXML
 	private void onLogin() {
-		logoutBox.setVisible(true);
-		loginBox.setVisible(false);
+		mainController.login(usernameTextfield.getText(), passwordField.getText());
 	}
 	
 	@FXML
 	private void onLogout() {
-		logoutBox.setVisible(false);
-		loginBox.setVisible(true);
+		Platform.runLater(() -> loginLabel.setText(LOGIN_STRING));
+		mainController.logout();
 	}
 	
 	@FXML
@@ -82,6 +119,20 @@ public class RootLayoutController{
 	 */
 	public void setMainController(MainController main) {
 		this.mainController = main;
+	}
+	
+	public void setConnectionAvailible() {
+		showLogin();
+		Platform.runLater(() -> loginLabel.setText(LOGIN_STRING));
+	}
+
+	public void setLoggedInAs(String username) {
+		Platform.runLater(() -> loginLabel.setText(LOGGED_IN_STRING + username));
+	}
+	
+	public void setNoConnection() {
+		showRetry();
+		Platform.runLater(() -> loginLabel.setText(NO_CONNECTION_STRING));
 	}
 	
 }

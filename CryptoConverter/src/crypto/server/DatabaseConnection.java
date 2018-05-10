@@ -44,7 +44,7 @@ public class DatabaseConnection {
 		insertSearchesStatement = connection.prepareStatement("INSERT INTO " + dbName + "." + SEARCHES_TABLE + " (ID, SYMBOL) VALUES (?, ?)");
 		getSearchesStatement = connection.prepareStatement("SELECT SYMBOL, SEARCHES FROM " + dbName + "." + SEARCHES_TABLE + " WHERE id = ?");
 		getAllSearchesStatement = connection.prepareStatement("SELECT SYMBOL, SEARCHES FROM " + dbName + "." + SEARCHES_TABLE);
-		searchesRowExists = connection.prepareStatement("SELECT SEARCHES FROM " + dbName + "." + SEARCHES_TABLE + " WHERE (ID = ? AND SYMBOL = ?");
+		searchesRowExists = connection.prepareStatement("SELECT SEARCHES FROM " + dbName + "." + SEARCHES_TABLE + " WHERE (ID = ? AND SYMBOL = ?)");
 	}
 	
 	/**
@@ -61,7 +61,6 @@ public class DatabaseConnection {
 		connection.commit();
 		ResultSet generatedKeys = createUserStatement.getGeneratedKeys();
 		if(generatedKeys.next()) {
-			System.out.println(generatedKeys.getInt(1));
 			return generatedKeys.getInt(1);
 		}
 		return -1;
@@ -94,8 +93,8 @@ public class DatabaseConnection {
 	 * @throws SQLException
 	 */
 	private void insertSearchHistory(int id, String symbol) throws SQLException {
-		insertSearchesStatement.setInt(1, 1);
-		insertSearchesStatement.setString(2, "USD");
+		insertSearchesStatement.setInt(1, id);
+		insertSearchesStatement.setString(2, symbol);
 		insertSearchesStatement.executeUpdate();
 		connection.commit();
 	}
@@ -107,19 +106,21 @@ public class DatabaseConnection {
 	 * @throws SQLException 
 	 */
 	public void incrementSearchHistory(int id, String symbol) throws SQLException {
+		searchesRowExists.setInt(1, id);
+		searchesRowExists.setString(2, symbol);
 		ResultSet results = searchesRowExists.executeQuery();
 		if(results.next()) {
-			insertSearchHistory(id, symbol);
-		} else {
 			incrementSearchesStatement.setInt(1, id);
 			incrementSearchesStatement.setString(2, symbol);
 			incrementSearchesStatement.executeUpdate();
 			connection.commit();
+		} else {
+			insertSearchHistory(id, symbol);
 		}
 	}
 	
 	/**
-	 * Returns a HashMap where the values are currency symbols and teh value is how many searches the user has made for that symbol.
+	 * Returns a HashMap where the values are currency symbols and the value is how many searches the user has made for that symbol.
 	 * @param id The id for the user.
 	 * @return
 	 * @throws SQLException

@@ -138,6 +138,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			e.printStackTrace();
 		}
 		unsavedChanges = true;
+		mainController.onSearch(new String[]{from.getSymbol(), to.getSymbol()});
 	}
 
 	/**
@@ -170,6 +171,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			e.printStackTrace();
 		}
 		unsavedChanges = true;
+		mainController.onSearch(new String[]{from.getSymbol(), to.getSymbol()});
 	}
 
 	/**
