@@ -13,7 +13,7 @@ import javafx.stage.Window;
 
 /**
  * 
- * @author Emil Ögge
+ * @author Emil Ã–gge
  *
  * @param <Currency>
  */
