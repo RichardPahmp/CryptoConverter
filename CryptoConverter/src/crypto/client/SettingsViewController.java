@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
+import crypto.util.SearchUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -60,6 +61,8 @@ public class SettingsViewController implements Initializable {
 		
 		currencyComboBox.selectionModelProperty().addListener((obs, oldV, newV) -> onComboBoxChange());
 		slider.valueProperty().addListener((obs, oldV, newV) -> onSliderChange());
+
+		new SearchUtil<>(currencyComboBox);
 	}
 	
 	private void populateStyleComboBox() {
