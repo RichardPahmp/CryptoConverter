@@ -8,6 +8,7 @@ import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -81,8 +82,7 @@ public class ConverterViewController implements ConverterPaneListener {
 	 */
 	@FXML
 	private void addConverterPane() {
-		ConverterPane pane = new ConverterPane(currencies);
-		pane.addConverterPaneListener(this);
+		ConverterPane pane = createConverterPane();
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
 		unsavedChanges = true;
 	}
@@ -93,11 +93,16 @@ public class ConverterViewController implements ConverterPaneListener {
 	 * @param data The data to initialize the pane with.
 	 */
 	private void addConverterPane(ConverterData data) {
-		ConverterPane pane = new ConverterPane(currencies);
-		pane.addConverterPaneListener(this);
+		ConverterPane pane = createConverterPane();
 		pane.setConverterData(data);
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
 		unsavedChanges = true;
+	}
+	
+	private ConverterPane createConverterPane() {
+		ConverterPane pane = new ConverterPane(currencies);
+		pane.addConverterPaneListener(this);
+		return pane;
 	}
 
 	/**
