@@ -40,7 +40,7 @@ public class ConverterViewController implements ConverterPaneListener {
 	
 	private boolean unsavedChanges;
 
-	private static DecimalFormat df = new DecimalFormat(".####");
+	private static DecimalFormat df = new DecimalFormat("#.####");
 
 	@FXML
 	private VBox vBox;
