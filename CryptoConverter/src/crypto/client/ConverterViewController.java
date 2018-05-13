@@ -20,6 +20,7 @@ import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -37,6 +38,8 @@ public class ConverterViewController implements ConverterPaneListener {
 	private MainController mainController;
 	
 	private boolean unsavedChanges;
+
+	private static DecimalFormat df = new DecimalFormat(".####");
 
 	@FXML
 	private VBox vBox;
@@ -124,11 +127,11 @@ public class ConverterViewController implements ConverterPaneListener {
 			if (date == null) {
 				Map<String, Double> price = Market.getPrice(from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
-				pane.setRightTextfieldText(String.format("%.12f", coinValue * sum));
+				pane.setRightTextfieldText(df.format(coinValue * sum));
 			} else {
 				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
-				pane.setRightTextfieldText(String.format("%.12f", coinValue * sum));
+				pane.setRightTextfieldText(df.format(coinValue * sum));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -157,11 +160,11 @@ public class ConverterViewController implements ConverterPaneListener {
 			if (date == null) {
 				Map<String, Double> price = Market.getPrice(from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
-				pane.setLeftTextfieldText(String.format("%.12f", coinValue * sum));
+				pane.setLeftTextfieldText(df.format(coinValue * sum));
 			} else {
 				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
-				pane.setLeftTextfieldText(String.format("%.12f", coinValue * sum));
+				pane.setLeftTextfieldText(df.format(coinValue * sum));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
