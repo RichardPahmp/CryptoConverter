@@ -36,6 +36,6 @@
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </padding>
       </GridPane>
-      <PieChart fx:id="pieChart" layoutX="507.0" layoutY="200.0" title="User Data" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+      <PieChart fx:id="pieChart" layoutX="507.0" layoutY="200.0" title="User Data" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
    </children>
 </AnchorPane>

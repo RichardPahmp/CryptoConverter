@@ -35,6 +35,7 @@ public class DatabaseConnection {
 		Properties props = new Properties();
 		props.put("user", "test");
 		props.put("password", "asd123");
+		DriverManager.setLoginTimeout(5);
 		connection = DriverManager.getConnection(URL, props);
 		connection.setAutoCommit(false);
 		
