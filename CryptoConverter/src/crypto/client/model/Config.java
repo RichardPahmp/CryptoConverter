@@ -8,7 +8,7 @@ public class Config {
 
 	public static int LIVE_FEED_RATE = 10;
 
-	private static String FILE_PATH = "CryptoConverter/files/settings.ser";
+	private static String FILE_PATH = "files/settings.ser";
 
 	public static void saveToDisk() {
 		try {

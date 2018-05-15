@@ -168,7 +168,7 @@ public class LivefeedViewController implements Initializable {
 		LiveCurrencyData save = new LiveCurrencyData();
 
 		try {
-			save.loadFromFile("CryptoConverter/files/liveSave.dat");
+			save.loadFromFile("files/liveSave.dat");
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
@@ -218,7 +218,7 @@ public class LivefeedViewController implements Initializable {
 				liveChange = "+" + changeFormat.format(change);
 
 
-			var newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, inCurrency);
+			LiveCurrency newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, inCurrency);
 
 			data.add(newCurrency);
 		}
