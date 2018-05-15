@@ -219,7 +219,7 @@ public class LivefeedViewController implements Initializable {
 				liveChange = "+" + changeFormat.format(change);
 
 
-			var newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, inCurrency);
+			LiveCurrency newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, inCurrency);
 
 			data.add(newCurrency);
 		}
