@@ -8,12 +8,10 @@ import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import me.joshmcfarlin.CryptoCompareAPI.Historic;
 import me.joshmcfarlin.CryptoCompareAPI.Market;
@@ -23,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +53,7 @@ public class ConverterViewController implements ConverterPaneListener {
 
 		ConverterChoices save = new ConverterChoices();
 		try {
-			save.loadFromFile("files/save.dat");
+			save.loadFromFile("CryptoConverter/files/save.dat");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -195,7 +191,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			}
 		}
 		try {
-			save.saveToFile("files/save.dat");
+			save.saveToFile("CryptoConverter/files/save.dat");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

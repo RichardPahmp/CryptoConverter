@@ -1,28 +1,13 @@
 package crypto.client;
 
+import crypto.messages.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-
-import crypto.messages.AllUserDataMessage;
-import crypto.messages.LoginFailedMessage;
-import crypto.messages.LoginMessage;
-import crypto.messages.LoginSuccessfulMessage;
-import crypto.messages.LogoutMessage;
-import crypto.messages.RegisterFailedMessage;
-import crypto.messages.RegisterMessage;
-import crypto.messages.RegisterSuccessfulMessage;
-import crypto.messages.RequestAllUserDataMessage;
-import crypto.messages.RequestUserDataMessage;
-import crypto.messages.SearchMessage;
-import crypto.messages.UserDataMessage;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class ServerConnection {
 	

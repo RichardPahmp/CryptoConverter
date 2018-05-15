@@ -1,14 +1,6 @@
 package crypto.client.model;
 
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class Config {
 
@@ -16,7 +8,7 @@ public class Config {
 
 	public static int LIVE_FEED_RATE = 10;
 
-	private static String FILE_PATH = "files/settings.ser";
+	private static String FILE_PATH = "CryptoConverter/files/settings.ser";
 
 	public static void saveToDisk() {
 		try {

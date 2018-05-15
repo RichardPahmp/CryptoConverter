@@ -1,36 +1,25 @@
 package crypto.client;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.util.ConverterData;
-import crypto.util.Pair;
 import crypto.util.SearchUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
+
+import java.io.IOException;
 
 /**
  * An HBox node Containing UI elements for converting a currency to a different
  * currency.
- * 
- * @author Richard
  *
+ * @author Richard
  */
 public class ConverterPane extends HBox {
 
@@ -38,10 +27,10 @@ public class ConverterPane extends HBox {
 
 	@FXML
 	private Button upArrowButton;
-	
+
 	@FXML
 	private Button downArrowButton;
-	
+
 	@FXML
 	private Button closeButton;
 
@@ -62,9 +51,8 @@ public class ConverterPane extends HBox {
 
 	/**
 	 * Initialize a ConverterPane with a list of currencies.
-	 * 
-	 * @param list
-	 *            The list of currencies the user can choose from.
+	 *
+	 * @param list The list of currencies the user can choose from.
 	 */
 	public ConverterPane(ObservableList<Currency> list) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("view/ConverterPane.fxml"));
@@ -82,25 +70,25 @@ public class ConverterPane extends HBox {
 		rightComboBox.getItems().setAll(list);
 		selectCurrencyLeft(Config.DEFAULT_SYMBOL);
 		selectCurrencyRight(Config.DEFAULT_SYMBOL);
-		
+
 		leftComboBox.setCellFactory(createCellFactory());
 		leftComboBox.setButtonCell(createListCell());
 		rightComboBox.setCellFactory(createCellFactory());
 		rightComboBox.setButtonCell(createListCell());
-		
+
 		Image upArrowImage = new Image("file:files/images/UpArrow.png", 16, 16, true, true);
 		Image downArrowImage = new Image("file:files/images/DownArrow.png", 16, 16, true, true);
 		ImageView view = new ImageView(upArrowImage);
 		upArrowButton.setGraphic(view);
 		view = new ImageView(downArrowImage);
 		downArrowButton.setGraphic(view);
-		
+
 		upArrowButton.setOnAction(e -> listener.moveUp(this));
 		downArrowButton.setOnAction(e -> listener.moveDown(this));
-		
+
 		new SearchUtil<Currency>(leftComboBox);
 		new SearchUtil<Currency>(rightComboBox);
-		
+
 		leftComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
 		rightComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
 
@@ -110,9 +98,8 @@ public class ConverterPane extends HBox {
 
 	/**
 	 * Set the data to display in the ConverterPane
-	 * 
-	 * @param data
-	 *            The data to display
+	 *
+	 * @param data The data to display
 	 */
 	public void setConverterData(ConverterData data) {
 		selectCurrencyLeft(data.getLeftCurrency());
@@ -125,9 +112,8 @@ public class ConverterPane extends HBox {
 	/**
 	 * Change the current selection of the left combobox to the currency with the
 	 * given symbol.
-	 * 
-	 * @param symbol
-	 *            The symbol of the currency to select.
+	 *
+	 * @param symbol The symbol of the currency to select.
 	 */
 	public void selectCurrencyLeft(String symbol) {
 		for (Currency currency : leftComboBox.getItems()) {
@@ -141,9 +127,8 @@ public class ConverterPane extends HBox {
 	/**
 	 * Change the current selection of the right combobox to the currency with the
 	 * given symbol.
-	 * 
-	 * @param symbol
-	 *            The symbol of the currency to select.
+	 *
+	 * @param symbol The symbol of the currency to select.
 	 */
 	public void selectCurrencyRight(String symbol) {
 		for (Currency currency : rightComboBox.getItems()) {
@@ -156,7 +141,7 @@ public class ConverterPane extends HBox {
 
 	/**
 	 * Get a ConverterData object containing the data entered by the user.
-	 * 
+	 *
 	 * @return ConverterData A class containing the selections made by the user.
 	 */
 	public ConverterData getConverterData() {
@@ -226,7 +211,7 @@ public class ConverterPane extends HBox {
 
 	/**
 	 * Set the text in the left textfield.
-	 * 
+	 *
 	 * @param text
 	 */
 	public void setLeftTextfieldText(String text) {
@@ -236,13 +221,13 @@ public class ConverterPane extends HBox {
 
 	/**
 	 * Set the text in the right textfield.
-	 * 
+	 *
 	 * @param text
 	 */
 	public void setRightTextfieldText(String text) {
 		rightTextField.setText(text);
 	}
-	
+
 	private Callback<ListView<Currency>, ListCell<Currency>> createCellFactory() {
 		return new Callback<ListView<Currency>, ListCell<Currency>>() {
 			@Override
@@ -251,7 +236,7 @@ public class ConverterPane extends HBox {
 					@Override
 					protected void updateItem(Currency item, boolean empty) {
 						super.updateItem(item, empty);
-						if(item != null && !empty) {
+						if (item != null && !empty) {
 							setText(item.getCoinFullName());
 						}
 					}
@@ -259,15 +244,17 @@ public class ConverterPane extends HBox {
 			}
 		};
 	}
-	
-	private ListCell<Currency> createListCell(){
+
+	private ListCell<Currency> createListCell() {
 		return new ListCell<Currency>() {
 			protected void updateItem(Currency item, boolean empty) {
 				super.updateItem(item, empty);
-				if(item != null && !empty) {
+				if (item != null && !empty) {
 					setText(item.getCoinName());
 				}
-			};
+			}
+
+			;
 		};
 	}
 }
