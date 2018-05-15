@@ -35,6 +35,7 @@ public class TrackerViewController {
 
 			alert.showAndWait();
 		}
+		//mainController.sendTracker(symbol, email, limit);
 	}
 	
 	@FXML
