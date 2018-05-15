@@ -149,14 +149,23 @@ public class GraphViewController implements Initializable {
 	 */
 	private void onDateChanged() {
 		chart.getData().clear();
-		for (ToggleButton toggleButton : listView.getItems()) {
-			if (toggleButton.isSelected()) {
-				GraphButtonData data = (GraphButtonData) toggleButton.getUserData();
-				XYChart.Series series = createSeries(data.currency.getSymbol(), data.history);
-				data.series = series;
-				chart.getData().add(series);
-			}
-		}
+		if (datePickerFrom.getValue().isBefore(datePickerTo.getValue())) {
+            for (ToggleButton toggleButton : listView.getItems()) {
+                if (toggleButton.isSelected()) {
+                    GraphButtonData data = (GraphButtonData) toggleButton.getUserData();
+                    XYChart.Series series = createSeries(data.currency.getSymbol(), data.history);
+                    data.series = series;
+                    chart.getData().add(series);
+                }
+            }
+        } else {
+		    datePickerFrom.setValue(datePickerTo.getValue());
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Invalid date selection");
+            alert.setHeaderText("From-date is after to-date");
+            alert.setContentText("Please select a from-date that is before your selected to-date");
+            alert.showAndWait();
+        }
 	}
 
 	private XYChart.Series createSeries(String name, History history) {

@@ -46,7 +46,6 @@ public class LivefeedViewController implements Initializable {
 	private static Timer timer = new Timer("name");
 
 
-	private static String filename = "CryptoConverter/files/LiveFeedFile.txt";
 
 	/**
 	 * Initialise a tableview in a separate tab from the main view. Sets table values to respective values in the
