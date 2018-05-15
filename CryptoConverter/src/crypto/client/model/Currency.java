@@ -62,6 +62,6 @@ public class Currency {
 	}
 	
 	public String toString() {
-		return this.coinFullName;
+		return this.symbol;
 	}
 }
