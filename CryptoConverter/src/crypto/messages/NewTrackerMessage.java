@@ -1,6 +1,8 @@
 package crypto.messages;
 
-public class NewTrackerMessage {
+import java.io.Serializable;
+
+public class NewTrackerMessage implements Serializable {
 	
 	private String symbol;
 	private String email;

@@ -14,6 +14,7 @@ import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
 import crypto.messages.LogoutMessage;
+import crypto.messages.NewTrackerMessage;
 import crypto.messages.RegisterFailedMessage;
 import crypto.messages.RegisterMessage;
 import crypto.messages.RegisterSuccessfulMessage;
@@ -144,6 +145,16 @@ public class ServerConnection {
 			socket.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		}
+	}
+	
+	public void sendTracker(String symbol, String email, double limit) {
+		NewTrackerMessage message = new NewTrackerMessage(symbol, email, limit);
+		try {
+			oos.writeObject(message);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

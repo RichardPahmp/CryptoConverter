@@ -1,14 +1,26 @@
 package crypto.client;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import crypto.client.model.Currency;
+import crypto.client.model.CurrencyList;
+import crypto.util.SearchUtil;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class TrackerViewController {
+/**
+ * Tracker used to notify users when currencies reaches a specific amount.
+ * 
+ * @author Emil Ögge
+ *
+ */
+public class TrackerViewController implements Initializable {
 	
 	@FXML
 	TextField limitTextfield;
@@ -19,13 +31,23 @@ public class TrackerViewController {
 	@FXML
 	ComboBox<Currency> comboBox;
 	
-	private MainController mainController;
+	private MainController mainController;	
 	
-	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
+		comboBox.getSelectionModel().select(0);
+		new SearchUtil<Currency>(comboBox);
+		limitTextfield.setPromptText("limit");
+		emailTextfield.setPromptText("email");
+	}
+
 	@FXML
 	private void onAdd() {
 		try {
-			Double.parseDouble(limitTextfield.toString());
+			double limit = Double.parseDouble(limitTextfield.toString());
+			String email = emailTextfield.getText();
+			mainController.sendTracker(comboBox.getValue().getSymbol(), email, limit);
 			
 		} catch (NumberFormatException e) {
 			Alert alert = new Alert(AlertType.WARNING);
@@ -35,7 +57,6 @@ public class TrackerViewController {
 
 			alert.showAndWait();
 		}
-		//mainController.sendTracker(symbol, email, limit);
 	}
 	
 	@FXML

@@ -12,7 +12,7 @@
    <children>
       <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ComboBox prefWidth="150.0" />
+            <ComboBox prefWidth="150.0" fx:id="comboBox"/>
             <TextField fx:id="limitTextfield" />
             <TextField fx:id="emailTextfield" />
             <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAdd" text="Add" />

@@ -245,6 +245,10 @@ public class MainController extends Application {
 		userStatsController.putAllUserData(map);
 	}
 	
+	public void sendTracker(String symbol, String email, double limit) {
+		serverConnection.sendTracker(symbol,email, limit);
+	}
+	
 	public void openTrackers() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
