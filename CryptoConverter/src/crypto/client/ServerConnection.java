@@ -83,6 +83,15 @@ public class ServerConnection {
 		}
 	}
 	
+	public void closeConnection() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void login(String user, String pass) {
 		LoginMessage message = new LoginMessage(user, pass);
 		try {

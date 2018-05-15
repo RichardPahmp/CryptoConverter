@@ -160,6 +160,7 @@ public class MainController extends Application {
 	}
 	
 	public void closeApp() {
+		serverConnection.closeConnection();
 		primaryStage.close();
 	}
 	
