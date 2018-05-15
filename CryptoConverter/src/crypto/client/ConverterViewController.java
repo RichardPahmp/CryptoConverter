@@ -53,7 +53,7 @@ public class ConverterViewController implements ConverterPaneListener {
 
 		ConverterChoices save = new ConverterChoices();
 		try {
-			save.loadFromFile("CryptoConverter/files/save.dat");
+			save.loadFromFile("files/save.dat");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

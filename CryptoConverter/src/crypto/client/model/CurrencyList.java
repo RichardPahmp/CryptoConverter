@@ -18,7 +18,7 @@ public class CurrencyList {
 
     private static CoinList coinList;
     private static ArrayList<Currency> currencyList;
-    private static String filename = "CryptoConverter/files/currencyList.txt";
+    private static String filename = "files/currencyList.txt";
 
 
     /**

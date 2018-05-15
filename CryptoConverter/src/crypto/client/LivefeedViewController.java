@@ -169,7 +169,7 @@ public class LivefeedViewController implements Initializable {
 		LiveCurrencyData save = new LiveCurrencyData();
 
 		try {
-			save.loadFromFile("CryptoConverter/files/liveSave.dat");
+			save.loadFromFile("files/liveSave.dat");
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
