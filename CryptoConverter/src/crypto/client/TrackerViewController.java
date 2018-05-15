@@ -21,7 +21,7 @@ public class TrackerViewController {
 	
 	@FXML
 	private void onAdd() {
-		
+		//mainController.sendTracker(symbol, email, limit);
 	}
 	
 	@FXML
