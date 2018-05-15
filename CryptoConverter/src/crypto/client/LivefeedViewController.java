@@ -3,8 +3,9 @@ package crypto.client;
 import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
+import crypto.client.model.LiveCurrency;
+import crypto.util.LiveCurrencyData;
 import crypto.util.SearchUtil;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,7 +15,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import me.joshmcfarlin.CryptoCompareAPI.Historic;
 import me.joshmcfarlin.CryptoCompareAPI.Market;
 import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
@@ -23,7 +23,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Controller class for the LiveFeedView.
@@ -46,12 +45,12 @@ public class LivefeedViewController implements Initializable {
 	private static TimerTask updateTable;
 	private static Timer timer = new Timer("name");
 
+
+
 	/**
 	 * Initialise a tableview in a separate tab from the main view. Sets table values to respective values in the
 	 * LiveCurrency-class.
 	 * Creates a TimerTask that will update values in the LiveCurrency-objects, which in turn inhabit the TableView.
-	 * <p>
-	 * TODO: Fix so all objects share one timer.
 	 */
 
 	@Override
@@ -99,6 +98,9 @@ public class LivefeedViewController implements Initializable {
 
 		new SearchUtil<>(comboBox);
 
+		loadLiveCurrencies();
+
+
 		if (data != null) {
 			updateTable = new TimerTask() {
 				@Override
@@ -106,31 +108,12 @@ public class LivefeedViewController implements Initializable {
 					updateTable(data);
 				}
 			};
-			long delay = Config.LIVE_FEED_RATE;
 			long period = Config.LIVE_FEED_RATE;
 
-			timer.scheduleAtFixedRate(updateTable, delay * 1000, period * 1000);
+			timer.scheduleAtFixedRate(updateTable, 0, period * 500);
 		}
 	}
 
-	/**
-	 * Creates and instantiates LiveCurrency-object from the chosen currency one wants to track, and adds it to a list.
-	 */
-
-	@FXML
-	private void onAddButtonClick() {
-		Currency currency = comboBox.getValue();
-
-		String name = getName(currency);
-		String price = getPrice(currency);
-		String volume = getVolume(currency);
-		String marketCap = getMarketCap(currency);
-		String change = getChange(currency);
-
-		LiveCurrency newCurrency = new LiveCurrency(name, price, volume, marketCap, change, currency);
-
-		data.add(newCurrency);
-	}
 
 	/**
 	 * Updates the TableView with a synchronized function that fetches information through the API,
@@ -140,6 +123,7 @@ public class LivefeedViewController implements Initializable {
 	 */
 
 	private void updateTable(List<LiveCurrency> list) {
+
 		list = Collections.synchronizedList(new ArrayList<LiveCurrency>());
 
 		for (LiveCurrency currency : data)
@@ -155,23 +139,181 @@ public class LivefeedViewController implements Initializable {
 	}
 
 	/**
-	 * Recursively executes all methods that fetch information through the API,
-	 * and sets these values to the corresponding LiveCurrency values.
-	 *
-	 * @param currency = The LiveCurrency-object that is being tracked.
+	 * Stores Currency-objects derived from LiveCurrency-objects into a file.
 	 */
 
-	private void updateObjects(LiveCurrency currency) {
-		currency.setName(getName(currency.getCurrency()));
-		currency.setPrice(getPrice(currency.getCurrency()));
-		currency.setVolume24h(getVolume(currency.getCurrency()));
-		currency.setMarketCap(getMarketCap(currency.getCurrency()));
-		currency.setLiveChange(getChange(currency.getCurrency()));
+	@FXML
+	public void storeLiveCurrencies() {
+
+		LiveCurrencyData save = new LiveCurrencyData();
+
+		for (LiveCurrency inCurrency : data) {
+			Currency currency = inCurrency.getCurrency();
+			if (data != null) {
+				save.addData(currency);
+			}
+		}
+		try {
+			save.saveToFile("CryptoConverter/files/liveSave.dat");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-    /**
-     * Removes the tracked currency from the TableView and notifies the user if no currency is selected.
-     */
+	/**
+	 * Loads Currency-objects into LiveCurrency-objects from a file.
+	 */
+
+	private void loadLiveCurrencies() {
+		LiveCurrencyData save = new LiveCurrencyData();
+
+		try {
+			save.loadFromFile("files/liveSave.dat");
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+
+		Iterator<Currency> iterator = save.getIterator();
+		if (iterator.hasNext()) {
+			while (iterator.hasNext()) {
+				addButton(iterator.next());
+			}
+		} else {
+			return;
+		}
+	}
+
+	/**
+	 * Creates and instantiates a LiveCurrency-object from the chosen currency loaded from a file.
+	 */
+
+	private void addButton(Currency inCurrency) {
+		Market.toSym convert = null;
+
+		String[] usd = {"USD"};
+		String[] toSym = {inCurrency.getSymbol()};
+
+		NumberFormat priceFormat = new DecimalFormat("$###,###.##");
+		NumberFormat volumeFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat marketCapFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat changeFormat = new DecimalFormat("#0.00");
+
+
+		if (inCurrency != null) {
+			try {
+				convert = Market.getMultiFull(toSym, usd).get(inCurrency.getSymbol()).get("USD");
+			} catch (IOException | OutOfCallsException e) {
+				e.printStackTrace();
+			}
+
+			String name = getName(inCurrency);
+			String price = priceFormat.format(convert.price);
+			String volume = volumeFormat.format(convert.volume24Hour);
+			String marketCap = marketCapFormat.format(convert.marketCap);
+
+			double change = convert.changePct24Hour;
+			String liveChange = null;
+
+			if (change > 0)
+				liveChange = "+" + changeFormat.format(change);
+
+
+			LiveCurrency newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, inCurrency);
+
+			data.add(newCurrency);
+		}
+	}
+
+	/**
+	 * Creates and instantiates LiveCurrency-object from the chosen currency one wants to track, and adds it to a list.
+     * Fetches information from the API and gives the new LiveCurrency-object those values.
+	 */
+
+	@FXML
+	private void onAddButtonClick() {
+		Currency currency = comboBox.getValue();
+
+		Market.toSym convert = null;
+
+		String[] usd = {"USD"};
+		String[] toSym = {currency.getSymbol()};
+
+		NumberFormat priceFormat = new DecimalFormat("$###,###.##");
+		NumberFormat volumeFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat marketCapFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat changeFormat = new DecimalFormat("#0.00");
+
+
+		if (currency != null) {
+			try {
+				convert = Market.getMultiFull(toSym, usd).get(currency.getSymbol()).get("USD");
+			} catch (IOException | OutOfCallsException e) {
+				e.printStackTrace();
+			}
+
+			String name = getName(currency);
+			String price = priceFormat.format(convert.price);
+			String volume = volumeFormat.format(convert.volume24Hour);
+			String marketCap = marketCapFormat.format(convert.marketCap);
+
+			double change = convert.changePct24Hour;
+			String liveChange = null;
+
+			if (change > 0)
+				liveChange = "+" + changeFormat.format(change);
+
+			LiveCurrency newCurrency = new LiveCurrency(name, price, volume, marketCap, liveChange, currency);
+
+			data.add(newCurrency);
+		}
+	}
+
+
+	/**
+	 * Fetches information from the API about the current price, volume over 24 hours,
+	 * market cap and percentage change over 24 hours.
+	 * and sets these values to the corresponding LiveCurrency values.
+	 *
+	 * @param inCurrency = The LiveCurrency-object that is being tracked.
+	 */
+
+	private void updateObjects(LiveCurrency inCurrency) {
+		Market.toSym convert = null;
+		Currency currency = inCurrency.getCurrency();
+
+		String[] usd = {"USD"};
+		String[] toSym = {currency.getSymbol()};
+
+		NumberFormat priceFormat = new DecimalFormat("$###,###.##");
+		NumberFormat volumeFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat marketCapFormat = new DecimalFormat("$###,###,###.###");
+		NumberFormat changeFormat = new DecimalFormat("#0.00");
+
+
+		if (inCurrency != null) {
+			try {
+				convert = Market.getMultiFull(toSym, usd).get(currency.getSymbol()).get("USD");
+			} catch (IOException | OutOfCallsException e) {
+				e.printStackTrace();
+			}
+
+			inCurrency.setPrice(priceFormat.format(convert.price));
+			inCurrency.setVolume24h(volumeFormat.format(convert.totalVolume24Hour));
+			inCurrency.setMarketCap(marketCapFormat.format(convert.marketCap));
+
+			double change = convert.changePct24Hour;
+			String liveChange = null;
+
+			if (change > 0)
+				liveChange = "+" + changeFormat.format(change);
+
+			inCurrency.setLiveChange(liveChange);
+		}
+	}
+
+	/**
+	 * Removes the tracked currency from the TableView and notifies the user if no currency is selected.
+	 */
 
 	@FXML
 	private void handleDeleteCurrency() {
@@ -188,206 +330,25 @@ public class LivefeedViewController implements Initializable {
 		}
 	}
 
-    /**
-     * Connects this controller to the MainController.
-     */
+	/**
+	 * Connects this controller to the MainController.
+	 */
 
 	void setMainController(MainController controller) {
 		this.mainController = controller;
 	}
 
-    /**
-     *  Returns the name of the currently tracked currency.
-     */
+	/**
+	 * Returns the name of the currently tracked currency.
+	 */
 
 	private String getName(Currency currency) {
 		return currency.getCoinFullName();
 	}
 
-    /**
-     * Return the current price of the tracked currency.
-     */
 
-	private String getPrice(Currency currency) {
-		double convert = 0;
-		NumberFormat formatter = new DecimalFormat("$###,###.##");
-
-		try {
-			convert = Market.getPrice(currency.getSymbol(), "USD").get("USD");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (OutOfCallsException e) {
-			e.printStackTrace();
-		}
-
-		String price = formatter.format(convert);
-
-		return price;
-	}
-
-    /**
-     * Returns the trading volume from a 24 hour-period of the tracked currency.
-     */
-
-	private String getVolume(Currency currency) {
-		String[] usd = {"USD"};
-		String[] btc = {"BTC"};
-		double convert = 0;
-		NumberFormat formatter = new DecimalFormat("$###,###,###.###");
-
-
-		try {
-			convert = Market.getMultiFull(btc, usd).get("BTC").get("USD").totalVolume24Hour;
-			convert *= Market.getPrice(currency.getSymbol(), "USD").get("USD");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (OutOfCallsException e) {
-			e.printStackTrace();
-		}
-
-		return formatter.format(convert);
-
-	}
-
-    /**
-     * Returns the current market cap of the tracked currency.
-     */
-
-	private String getMarketCap(Currency currency) {
-		String[] usd = {"USD"};
-		String[] btc = {"BTC"};
-		double convert = 0;
-		NumberFormat formatter = new DecimalFormat("$###,###,###.###");
-
-		try {
-			convert = Market.getMultiFull(btc, usd).get("BTC").get("USD").marketCap;
-			convert *= Market.getPrice(currency.getSymbol(), "USD").get("USD");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (OutOfCallsException e) {
-			e.printStackTrace();
-		}
-		return formatter.format(convert);
-	}
-
-    /**
-     *  Returns a percentage change over a 24 hour-period of the tracked currency.
-     */
-
-	private String getChange(Currency currency) {
-		double currentPrice;
-		double comparePrice;
-		double priceDifference = 0;
-		NumberFormat formatter = new DecimalFormat("#0.00");
-
-		try {
-			currentPrice = Market.getPrice(currency.getSymbol(), "USD").get("USD");
-			comparePrice = Historic.getHour(currency.getSymbol(), "USD", 24).data.get(0).close;
-
-			priceDifference = ((currentPrice - comparePrice) / comparePrice) * 100;
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (OutOfCallsException e) {
-			System.out.println(e.getMessage());
-		}
-		if (priceDifference > 9.99 || priceDifference < -9.99)
-			formatter = new DecimalFormat("#00.00");
-		if (priceDifference > 99.99 || priceDifference < -99.99)
-			formatter = new DecimalFormat("#000.00");
-		if (priceDifference > 0)
-			return " + " + formatter.format(priceDifference) + " %";
-		else
-			return formatter.format(priceDifference) + " %";
-	}
-
-    /**
-     * Class which represents a currency the user wants to track in the LiveFeedView.
-     * @author Anto
-     */
-
-	public class LiveCurrency {
-		private SimpleStringProperty name;
-		private SimpleStringProperty price;
-		private SimpleStringProperty volume24h;
-		private SimpleStringProperty marketCap;
-		private SimpleStringProperty liveChange;
-		private Currency currency;
-
-		LiveCurrency(String name, String price, String volume24h,
-					 String marketCap, String liveChange, Currency currency) {
-			this.name = new SimpleStringProperty(name);
-			this.price = new SimpleStringProperty(price);
-			this.volume24h = new SimpleStringProperty(volume24h);
-			this.marketCap = new SimpleStringProperty(marketCap);
-			this.liveChange = new SimpleStringProperty(liveChange);
-			this.currency = currency;
-		}
-
-		public Currency getCurrency() {
-			return currency;
-		}
-
-
-		public String getName() {
-			return name.get();
-		}
-
-		public SimpleStringProperty nameProperty() {
-			return name;
-		}
-
-		void setName(String name) {
-			this.name.set(name);
-		}
-
-		public String getPrice() {
-			return price.get();
-		}
-
-		public SimpleStringProperty priceProperty() {
-			return price;
-		}
-
-		void setPrice(String price) {
-			this.price.set(price);
-		}
-
-		public String getVolume24h() {
-			return volume24h.get();
-		}
-
-		public SimpleStringProperty volume24hProperty() {
-			return volume24h;
-		}
-
-		void setVolume24h(String volume24h) {
-			this.volume24h.set(volume24h);
-		}
-
-		public String getMarketCap() {
-			return marketCap.get();
-		}
-
-		public SimpleStringProperty marketCapProperty() {
-			return marketCap;
-		}
-
-		void setMarketCap(String marketCap) {
-			this.marketCap.set(marketCap);
-		}
-
-		public String getLiveChange() {
-			return liveChange.get();
-		}
-
-		public SimpleStringProperty liveChangeProperty() {
-			return liveChange;
-		}
-
-		void setLiveChange(String liveChange) {
-			this.liveChange.set(liveChange);
-		}
+	public void addCurrency(LiveCurrency currency) {
+		data.add(currency);
 	}
 }
 

@@ -1,25 +1,20 @@
 package crypto.client;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
 import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
 import crypto.util.SearchUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class SettingsViewController implements Initializable {
 	
@@ -66,7 +61,7 @@ public class SettingsViewController implements Initializable {
 	}
 	
 	private void populateStyleComboBox() {
-		File folder = new File("files/css");
+		File folder = new File("CryptoConverter/files/css");
 		File[] fileList = folder.listFiles();
 		for(File file : fileList) {
 			try {

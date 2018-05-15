@@ -1,21 +1,19 @@
 package crypto.client;
 
-import java.io.Serializable;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class UserStatisticsViewController implements Initializable {
 	

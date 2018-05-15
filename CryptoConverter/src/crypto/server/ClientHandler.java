@@ -1,24 +1,13 @@
 package crypto.server;
 
+import crypto.messages.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashMap;
-
-import crypto.messages.AllUserDataMessage;
-import crypto.messages.LoginFailedMessage;
-import crypto.messages.LoginMessage;
-import crypto.messages.LoginSuccessfulMessage;
-import crypto.messages.LogoutMessage;
-import crypto.messages.RegisterFailedMessage;
-import crypto.messages.RegisterMessage;
-import crypto.messages.RegisterSuccessfulMessage;
-import crypto.messages.RequestAllUserDataMessage;
-import crypto.messages.RequestUserDataMessage;
-import crypto.messages.SearchMessage;
-import crypto.messages.UserDataMessage;
 
 /**
  * Serverside connection to a client.

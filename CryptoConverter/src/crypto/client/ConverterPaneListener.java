@@ -1,8 +1,8 @@
 package crypto.client;
 
-import java.time.LocalDate;
-
 import crypto.client.model.Currency;
+
+import java.time.LocalDate;
 
 /**
  * An interface for callbacks from a ConverterPane instance.

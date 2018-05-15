@@ -1,14 +1,10 @@
 package crypto.client.model;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import me.joshmcfarlin.CryptoCompareAPI.Coins;
-import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList;
 import me.joshmcfarlin.CryptoCompareAPI.Coins.CoinList.CoinEntry;
-import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 
-public class Currency {
+import java.io.Serializable;
+
+public class Currency implements Serializable {
 	
 	private String symbol;
 	private String ImageUrl;

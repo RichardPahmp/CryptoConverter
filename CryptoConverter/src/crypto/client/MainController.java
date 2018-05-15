@@ -1,25 +1,23 @@
 package crypto.client;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.URL;
-import java.util.HashMap;
-
 import crypto.client.model.Config;
 import crypto.client.model.CurrencyList;
+import crypto.util.LiveCurrencyData;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * The main class for the JavaFX project.
