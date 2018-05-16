@@ -4,6 +4,9 @@ import crypto.client.model.Config;
 import crypto.client.model.Currency;
 import crypto.util.ConverterData;
 import crypto.util.SearchUtil;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -48,7 +52,10 @@ public class ConverterPane extends HBox {
 
 	@FXML
 	private DatePicker datePicker;
-
+	
+	private Timeline timelineLeftField, timelineRightField;
+	
+	
 	/**
 	 * Initialize a ConverterPane with a list of currencies.
 	 *
@@ -94,6 +101,18 @@ public class ConverterPane extends HBox {
 
 		leftTextField.setText("0");
 		rightTextField.setText("0");
+		
+		timelineLeftField = new Timeline();
+		timelineRightField = new Timeline();
+		
+		KeyFrame keyFrameUpdateLeft = new KeyFrame(Duration.millis(1000), e -> leftTextfieldAction());
+		KeyFrame keyFrameUpdateRight = new KeyFrame(Duration.millis(1000), e -> rightTextfieldAction());
+		
+		timelineLeftField.getKeyFrames().add(keyFrameUpdateLeft);
+		timelineRightField.getKeyFrames().add(keyFrameUpdateRight);
+		
+		leftTextField.setOnKeyPressed(e -> timelineLeftField.playFromStart());
+		rightTextField.setOnKeyPressed(e -> timelineRightField.playFromStart());
 	}
 
 	/**
@@ -178,6 +197,7 @@ public class ConverterPane extends HBox {
 	 */
 	@FXML
 	private void leftTextfieldAction() {
+		timelineLeftField.stop();
 		double sum;
 		try {
 			sum = Double.parseDouble(leftTextField.getText());
@@ -196,6 +216,7 @@ public class ConverterPane extends HBox {
 	 */
 	@FXML
 	private void rightTextfieldAction() {
+		timelineRightField.stop();
 		double sum;
 		try {
 			sum = Double.parseDouble(rightTextField.getText());
