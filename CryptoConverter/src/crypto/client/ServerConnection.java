@@ -83,13 +83,16 @@ public class ServerConnection {
 		}
 	}
 	
-	public void closeConnection() {
+	public void close() {
 		try {
-			socket.close();
+			if(socket != null) {
+				socket.close();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		isAlive = false;
 	}
 	
 	public void login(String user, String pass) {

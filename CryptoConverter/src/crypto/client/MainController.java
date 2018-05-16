@@ -143,7 +143,8 @@ public class MainController extends Application {
 	}
 	
 	public void onClose(WindowEvent e) {
-		serverConnection.disconnect();
+		serverConnection.close();
+		livefeedController.onClose();
 		if(settingsStage != null) {
 			if(settingsStage.isShowing()) {
 				settingsController.onClose();
@@ -158,7 +159,7 @@ public class MainController extends Application {
 	}
 	
 	public void closeApp() {
-		serverConnection.closeConnection();
+		serverConnection.close();
 		primaryStage.close();
 	}
 	

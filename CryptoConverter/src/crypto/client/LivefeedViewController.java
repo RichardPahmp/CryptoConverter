@@ -350,5 +350,9 @@ public class LivefeedViewController implements Initializable {
 	public void addCurrency(LiveCurrency currency) {
 		data.add(currency);
 	}
+	
+	public void onClose() {
+		timer.cancel();
+	}
 }
 
