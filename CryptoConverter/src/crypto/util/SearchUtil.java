@@ -24,6 +24,7 @@ public class SearchUtil<Currency> {
 	private String filter = "";
 	private ObservableList<Currency> items;
 	private boolean open = false;
+	private int lastSelectedIndex = 0;
 
 	public SearchUtil(ComboBox<Currency> cmbBox) {
 		this.cmbBox = cmbBox;
@@ -73,7 +74,7 @@ public class SearchUtil<Currency> {
 				showTooltip(item);
 			}
 		}
-		cmbBox.setItems(filteredItems);
+		cmbBox.getItems().setAll(filteredItems);
 	}
 
 	public void handleOnHiding(Event e) {
@@ -83,10 +84,14 @@ public class SearchUtil<Currency> {
 		Currency curr = cmbBox.getSelectionModel().getSelectedItem();
 		cmbBox.getItems().setAll(items);
 		cmbBox.getSelectionModel().select(curr);
+		if(cmbBox.getValue() == null) {
+			cmbBox.getSelectionModel().select(lastSelectedIndex);
+		}
 	}
 
 	public void handleOnShow(Event e) {
 		open = true;
+		lastSelectedIndex = cmbBox.getSelectionModel().getSelectedIndex();
 		
 		showTooltip("Type to filter currencies");
 	}
