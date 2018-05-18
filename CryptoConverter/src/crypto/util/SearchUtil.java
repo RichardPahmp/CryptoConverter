@@ -1,10 +1,15 @@
 package crypto.util;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import crypto.client.model.Currency;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
@@ -19,7 +24,7 @@ import java.util.stream.Stream;
  *
  * @param <Currency>
  */
-public class SearchUtil<Currency> {
+public class SearchUtil {
 	private ComboBox<Currency> cmbBox;
 	private String filter = "";
 	private ObservableList<Currency> items;
@@ -67,7 +72,7 @@ public class SearchUtil<Currency> {
 		} else {
 			Stream<Currency> items = cmbBox.getItems().stream();
 			String item = filter.toString().toLowerCase();
-			items.filter(el -> el.toString().toLowerCase().contains(item)).forEach(filteredItems::add);
+			items.filter(c -> c.getSymbol().toLowerCase().contains(item) || c.getCoinName().toLowerCase().contains(item)).forEach(filteredItems::add);
 			if(filter.equals("")) {
 				showTooltip("Type to filter currencies");
 			} else {

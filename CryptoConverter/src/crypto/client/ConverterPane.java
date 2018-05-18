@@ -93,8 +93,8 @@ public class ConverterPane extends HBox {
 		upArrowButton.setOnAction(e -> listener.moveUp(this));
 		downArrowButton.setOnAction(e -> listener.moveDown(this));
 
-		new SearchUtil<Currency>(leftComboBox);
-		new SearchUtil<Currency>(rightComboBox);
+		new SearchUtil(leftComboBox);
+		new SearchUtil(rightComboBox);
 
 		leftComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
 		rightComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());

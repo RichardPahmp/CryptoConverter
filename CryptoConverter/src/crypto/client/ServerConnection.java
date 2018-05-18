@@ -9,7 +9,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-import crypto.messages.AllUserDataMessage;
 import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
@@ -18,7 +17,6 @@ import crypto.messages.NewTrackerMessage;
 import crypto.messages.RegisterFailedMessage;
 import crypto.messages.RegisterMessage;
 import crypto.messages.RegisterSuccessfulMessage;
-import crypto.messages.RequestAllUserDataMessage;
 import crypto.messages.RequestUserDataMessage;
 import crypto.messages.SearchMessage;
 import crypto.messages.UserDataMessage;
@@ -139,17 +137,6 @@ public class ServerConnection {
 		}
 	}
 	
-	public void requestAllUserData() {
-		RequestAllUserDataMessage message = new RequestAllUserDataMessage();
-		try {
-			oos.writeObject(message);
-			oos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			onDisconnect();
-		}
-	}
-	
 	private void onDisconnect() {
 		mainController.onDisconnect();
 		try {
@@ -191,11 +178,8 @@ public class ServerConnection {
 			} else if(obj instanceof RegisterFailedMessage){ 
 				mainController.onRegisterFailed();
 			} else if(obj instanceof UserDataMessage) {
-				HashMap<String, Integer> map = ((UserDataMessage)obj).getMap();
-				mainController.onUserDataReceived(map);
-			} else if(obj instanceof AllUserDataMessage) {
-				HashMap<String, Integer> map = ((AllUserDataMessage)obj).getMap();
-				mainController.onAllUserDataReceived(map);
+				UserDataMessage message = (UserDataMessage)obj;
+				mainController.onUserDataReceived(message.getMapMe(), message.getMapAll());
 			}
 		}
 	}

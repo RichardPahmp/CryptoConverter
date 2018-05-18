@@ -54,6 +54,7 @@ public class ClientHandler extends Thread {
 					isAlive = false;
 				}
 
+				System.out.println(obj);
 				if (obj instanceof LoginMessage) {
 					LoginMessage message = (LoginMessage) obj;
 					String user = message.getUsername();
@@ -87,20 +88,11 @@ public class ClientHandler extends Thread {
 						oos.writeObject(tempMess);
 						oos.flush();
 					}
-				} else if (obj instanceof RequestAllUserDataMessage) {
-					try {
-						HashMap<String, Integer> map = db.getAllSearches();
-						AllUserDataMessage tempMess = new AllUserDataMessage(map);
-						oos.writeObject(tempMess);
-						oos.flush();
-					} catch (SQLException e) {
-						e.printStackTrace();
-						System.out.println(e.getMessage());
-					}
 				} else if (obj instanceof RequestUserDataMessage) {
 					try {
-						HashMap<String, Integer> map = db.getSearches(id);
-						UserDataMessage tempMess = new UserDataMessage(map);
+						HashMap<String, Integer> mapMe = db.getSearches(id);
+						HashMap<String, Integer> mapAll = db.getAllSearches();
+						UserDataMessage tempMess = new UserDataMessage(mapMe, mapAll);
 						oos.writeObject(tempMess);
 						oos.flush();
 					} catch (SQLException e) {
@@ -126,7 +118,7 @@ public class ClientHandler extends Thread {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			
+			e.printStackTrace();
 		}
 	}
 }

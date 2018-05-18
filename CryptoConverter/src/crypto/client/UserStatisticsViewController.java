@@ -16,113 +16,160 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class UserStatisticsViewController implements Initializable {
-	
+
 	@FXML
-	private Label favoriteLabel;
-	
+	private Label labelMeCurrency;
+
 	@FXML
-	private Label numberLabel;
-	
+	private Label labelAllCurrency;
+
 	@FXML
-	private PieChart pieChart;
-	
+	private Label labelMeSearches;
+
 	@FXML
-	private ChoiceBox<Choices> choiceBox;
-	
+	private Label labelAllSearches;
+
+	@FXML
+	private PieChart pieChartMe;
+
+	@FXML
+	private PieChart pieChartAll;
+
 	private MainController mainController;
-	
+
 	private Choices currentChoice;
-	
+
 	private HashMap<String, Integer> myDataMap, allDataMap;
-	
-	private enum Choices{
-		myData,
-		allData;
+
+	private enum Choices {
+		myData, allData;
 	}
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		choiceBox.setItems(FXCollections.observableArrayList(Choices.myData, Choices.allData));
-		choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Choices>() {
-			public void changed(ObservableValue obs, Choices value, Choices newValue) {
-				currentChoice = newValue;
-				updateData();
-			}
+
+	}
+
+	/**
+	 * Outputs the data in the myDataMap to the view
+	 */
+	private void showMeData() {
+		int totalSearches = getSearchesSum(myDataMap);
+		String biggestSymbol = getBiggestSymbol(myDataMap);
+
+		int showLimit = totalSearches / 10;
+
+		ObservableList<PieChart.Data> chartData = createChartData(myDataMap, showLimit);
+
+		Platform.runLater(() -> {
+			pieChartMe.setData(chartData);
+
+			labelMeSearches.setText(totalSearches + "");
+			labelMeCurrency.setText(biggestSymbol);
 		});
-		choiceBox.getSelectionModel().select(0);
 	}
-	
-	private void showData(HashMap<String, Integer> map) {
-		if(map != null) {
-			Platform.runLater(() -> {
-				int totalSearches = 0;
-				int biggestSum = 0;
-				String biggestSymbol = "";
-				for(String str : map.keySet()) {
-					totalSearches += map.get(str);
-					if(map.get(str) > biggestSum) {
-						biggestSum = map.get(str);
-						biggestSymbol = str;
-					}
-				}
-				
-				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-				int showLimit = totalSearches / 10;
-				int others = 0;
-				
-				for(String str : map.keySet()) {
-					if(map.get(str) > showLimit) {
-						pieChartData.add(createPieChartData(str, map.get(str)));
-					} else {
-						others += map.get(str);
-					}
-				}
-				pieChartData.add(new PieChart.Data("Others", others));
-				pieChart.setData(pieChartData);
-				
-				numberLabel.setText(totalSearches+"");
-				favoriteLabel.setText(biggestSymbol);
-				
-			});
+
+	/**
+	 * outputs the data in the allDataMap to the view
+	 */
+	private void showAllData() {
+		int totalSearches = getSearchesSum(allDataMap);
+		String biggestSymbol = getBiggestSymbol(allDataMap);
+
+		int showLimit = totalSearches / 10;
+
+		ObservableList<PieChart.Data> chartData = createChartData(allDataMap, showLimit);
+
+		Platform.runLater(() -> {
+			pieChartAll.setData(chartData);
+
+			labelAllSearches.setText(totalSearches + "");
+			labelAllCurrency.setText(biggestSymbol);
+		});
+	}
+
+	/**
+	 * Creates a list of piechart data from the given map
+	 * @param map The map to create data from
+	 * @param othersLimit Any entry with less than these many entries is put into the "others" category
+	 * @return A list of pieChart.Data
+	 */
+	private ObservableList<PieChart.Data> createChartData(HashMap<String, Integer> map, int othersLimit) {
+		int others = 0;
+		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+		for (String str : map.keySet()) {
+			if (map.get(str) > othersLimit) {
+				pieChartData.add(createPieChartData(str, map.get(str)));
+			} else {
+				others += map.get(str);
+			}
 		}
+		pieChartData.add(new PieChart.Data("Others", others));
+		return pieChartData;
 	}
-	
+
+	/**
+	 * Returns the total numbers of searches in the given map
+	 * @param map
+	 * @return
+	 */
+	private int getSearchesSum(HashMap<String, Integer> map) {
+		int totalSearches = 0;
+		for (String str : map.keySet()) {
+			totalSearches += map.get(str);
+		}
+		//since 1 search logs 2 symbols there are twice as many symbols as there are searches
+		return totalSearches / 2;
+	}
+
+	/**
+	 * Returns the most popular symbol the given map.
+	 * @param map
+	 * @return
+	 */
+	private String getBiggestSymbol(HashMap<String, Integer> map) {
+		int biggestSum = 0;
+		String biggestSymbol = "";
+		for (String str : map.keySet()) {
+			if (map.get(str) > biggestSum) {
+				biggestSum = map.get(str);
+				biggestSymbol = str;
+			}
+		}
+		return biggestSymbol;
+	}
+
+	/**
+	 * Create a PieChart.Data with the given name and int
+	 * @param name
+	 * @param num
+	 * @return
+	 */
 	private PieChart.Data createPieChartData(String name, int num) {
 		PieChart.Data data = new PieChart.Data(name, num);
 		return data;
 	}
-	
-	private void updateData() {
-		if(currentChoice == Choices.myData) {
-			showData(myDataMap);
-		} else if(currentChoice == Choices.allData) {
-			showData(allDataMap);
-		}
-	}
 
 	@FXML
 	private void onRefresh() {
-		if(currentChoice == Choices.myData) {
-			mainController.requestUserData();
-		} else if(currentChoice == Choices.allData) {
-			mainController.requestAllUserData();
-		}
-	}
-	
-	public void putUserData(HashMap<String, Integer> map) {
-		myDataMap = map;
-		updateData();
-	}
-	
-	public void putAllUserData(HashMap<String, Integer> map) {
-		allDataMap = map;
-		updateData();
-	}
-	
-	public void setMainController(MainController controller) {
-		this.mainController = controller;
-		mainController.requestAllUserData();
 		mainController.requestUserData();
 	}
-	
+
+	/**
+	 * Update the userdata maps and update the view.
+	 * @param myMapData
+	 * @param allMapData
+	 */
+	public void putUserData(HashMap<String, Integer> myMapData, HashMap<String, Integer> allMapData) {
+		myDataMap = myMapData;
+		allDataMap = allMapData;
+		showMeData();
+		showAllData();
+	}
+
+	public void setMainController(MainController controller) {
+		this.mainController = controller;
+		mainController.requestUserData();
+	}
+
 }

@@ -84,7 +84,7 @@ public class GraphViewController implements Initializable {
 		datePickerFrom.setOnAction(e -> onDateChanged());
 		datePickerTo.setOnAction(e -> onDateChanged());
 
-		new SearchUtil<>(comboBox);
+		new SearchUtil(comboBox);
 	}
 
 	/**
@@ -97,7 +97,6 @@ public class GraphViewController implements Initializable {
 			History history = Historic.getDayAllData(currency.getSymbol(), "USD");
 			ToggleButton button = createToggleButton(currency, history);
 			listView.getItems().add(button);
-			mainController.onSearch(new String[] {currency.getSymbol()});
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

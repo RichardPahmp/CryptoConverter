@@ -96,7 +96,7 @@ public class LivefeedViewController implements Initializable {
 		}
 		tableView.getColumns().addAll(currencyName, currencyPrice, currencyVolume24h, currencyMarketCap, currencyChange);
 
-		new SearchUtil<>(comboBox);
+		new SearchUtil(comboBox);
 
 		loadLiveCurrencies();
 

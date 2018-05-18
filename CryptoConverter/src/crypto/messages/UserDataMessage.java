@@ -4,13 +4,19 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class UserDataMessage implements Serializable {
-	private HashMap<String, Integer> map;
+	private HashMap<String, Integer> mapAll;
+	private HashMap<String, Integer> mapMe;
 	
-	public UserDataMessage(HashMap<String, Integer> map) {
-		this.map = map;
+	public UserDataMessage(HashMap<String, Integer> mapMe, HashMap<String, Integer> mapAll) {
+		this.mapMe = mapMe;
+		this.mapAll = mapAll;
 	}
 	
-	public HashMap<String, Integer> getMap(){
-		return map;
+	public HashMap<String, Integer> getMapAll() {
+		return mapAll;
 	}
+	public HashMap<String, Integer> getMapMe() {
+		return mapMe;
+	}
+	
 }

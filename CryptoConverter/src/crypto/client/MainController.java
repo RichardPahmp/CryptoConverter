@@ -233,18 +233,10 @@ public class MainController extends Application {
 		serverConnection.requestUserData();
 	}
 	
-	public void requestAllUserData(){
-		serverConnection.requestAllUserData();
+	public void onUserDataReceived(HashMap<String, Integer> mapMe, HashMap<String, Integer> mapAll) {
+		userStatsController.putUserData(mapMe, mapAll);
 	}
-	
-	public void onUserDataReceived(HashMap<String, Integer> map) {
-		userStatsController.putUserData(map);
-	}
-	
-	public void onAllUserDataReceived(HashMap<String, Integer> map) {
-		userStatsController.putAllUserData(map);
-	}
-	
+		
 	public void sendTracker(String symbol, String email, double limit) {
 		serverConnection.sendTracker(symbol,email, limit);
 	}

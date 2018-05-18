@@ -29,7 +29,7 @@ public class Currency implements Serializable {
 	 */
 	public Currency(CoinEntry coin) {
 		this.symbol = coin.symbol;
-		this.coinName = coin.symbol;
+		this.coinName = coin.coinName;
 		this.coinFullName = coin.fullName;
 		this.ImageUrl = coin.imageUrl;
 	}

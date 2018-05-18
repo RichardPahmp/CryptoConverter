@@ -17,7 +17,7 @@ import javafx.scene.control.TextField;
 /**
  * Tracker used to notify users when currencies reaches a specific amount.
  * 
- * @author Emil Ögge
+ * @author Emil ï¿½gge
  *
  */
 public class TrackerViewController implements Initializable {
@@ -37,7 +37,7 @@ public class TrackerViewController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
 		comboBox.getSelectionModel().select(0);
-		new SearchUtil<Currency>(comboBox);
+		new SearchUtil(comboBox);
 		limitTextfield.setPromptText("limit");
 		emailTextfield.setPromptText("email");
 	}

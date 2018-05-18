@@ -57,7 +57,7 @@ public class SettingsViewController implements Initializable {
 		currencyComboBox.selectionModelProperty().addListener((obs, oldV, newV) -> onComboBoxChange());
 		slider.valueProperty().addListener((obs, oldV, newV) -> onSliderChange());
 
-		new SearchUtil<>(currencyComboBox);
+		new SearchUtil(currencyComboBox);
 	}
 	
 	private void populateStyleComboBox() {
