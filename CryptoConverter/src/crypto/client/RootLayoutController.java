@@ -100,11 +100,6 @@ public class RootLayoutController{
 		mainController.openSettings();
 	}
 	
-	@FXML
-	private void handleAddTrackers() {
-		mainController.openTrackers();
-	}
-	
 	/**
 	 * Opens a window showing information about the program when the About menu item is clicked.
 	 */

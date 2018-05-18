@@ -31,6 +31,10 @@ public class SearchUtil {
 	private boolean open = false;
 	private int lastSelectedIndex = 0;
 
+	/**
+	 * Makes the given combobox searchable.
+	 * @param cmbBox
+	 */
 	public SearchUtil(ComboBox<Currency> cmbBox) {
 		this.cmbBox = cmbBox;
 		items = FXCollections.observableArrayList(cmbBox.getItems());
@@ -40,6 +44,10 @@ public class SearchUtil {
 		cmbBox.setOnShown(this::handleOnShow);
 	}
 
+	/**
+	 * Handle keyboard input
+	 * @param e
+	 */
 	public void onKeyPressed(KeyEvent e) {
 		if(!open) {
 			return;
@@ -82,6 +90,10 @@ public class SearchUtil {
 		cmbBox.getItems().setAll(filteredItems);
 	}
 
+	/**
+	 * Hide the tooltip when the combobox is hidden.
+	 * @param e
+	 */
 	public void handleOnHiding(Event e) {
 		filter = "";
 		open = false;
@@ -94,6 +106,10 @@ public class SearchUtil {
 		}
 	}
 
+	/**
+	 * Show the tooltip when the combobox is shown.
+	 * @param e
+	 */
 	public void handleOnShow(Event e) {
 		open = true;
 		lastSelectedIndex = cmbBox.getSelectionModel().getSelectedIndex();
@@ -101,6 +117,10 @@ public class SearchUtil {
 		showTooltip("Type to filter currencies");
 	}
 	
+	/**
+	 * Shows the tooltip to the screen with the given text.
+	 * @param text
+	 */
 	private void showTooltip(String text) {
 		Window stage = cmbBox.getScene().getWindow();
 		double positionX = stage.getX() + cmbBox.localToScene(cmbBox.getBoundsInLocal()).getMinX();

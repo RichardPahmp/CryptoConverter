@@ -23,6 +23,10 @@ public class DatabaseConnection {
 	private PreparedStatement searchesRowExists;
 	private PreparedStatement verifyLoginStatement;
 	
+	/**
+	 * Create a new DatabaseConnection
+	 * @throws SQLException
+	 */
 	public DatabaseConnection() throws SQLException {
 		Properties props = new Properties();
 		props.put("user", "test");
@@ -149,21 +153,5 @@ public class DatabaseConnection {
 			}
 		}
 		return map;
-	}
-	
-	public static void main(String[] args) {
-		try {
-			DatabaseConnection db = new DatabaseConnection();
-//			System.out.println(db.verifyLogin("Richard", "Pahmp"));
-//			db.createNewUser("Emil2", "Ogge");
-//			System.out.println(db.verifyLogin("Emil2", "Ogge"));
-//			db.incrementSearchHistory(1, "USD");
-//			db.createNewUser("Richard", "Pahmp");
-//			db.createNewUser("Richard2", "Pahmp2");
-//			db.createNewUser("Richard3", "Pahmp3");
-//			db.createNewUser("Richard4", "Pahmp4");
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
 	}
 }

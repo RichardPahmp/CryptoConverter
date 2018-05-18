@@ -60,6 +60,9 @@ public class SettingsViewController implements Initializable {
 		new SearchUtil(currencyComboBox);
 	}
 	
+	/**
+	 * Check the css directory for .css files and load them into a combobox.
+	 */
 	private void populateStyleComboBox() {
 		File folder = new File("CryptoConverter/files/css");
 		File[] fileList = folder.listFiles();
@@ -108,6 +111,9 @@ public class SettingsViewController implements Initializable {
 		unsavedChanges = true;
 	}
 	
+	/**
+	 * Save changes made to the config.
+	 */
 	private void applyChanges() {
 		StyleListItem item = styleComboBox.getValue();
 		if(item != null) {
@@ -143,6 +149,11 @@ public class SettingsViewController implements Initializable {
 		this.mainController = controller;
 	}
 	
+	/**
+	 * A listitem containing the url to a css file. Used in the combobox for css styles.
+	 * @author Richard
+	 *
+	 */
 	private class StyleListItem {
 		private String name;
 		private String urlString;

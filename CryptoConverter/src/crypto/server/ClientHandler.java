@@ -26,6 +26,11 @@ public class ClientHandler extends Thread {
 	
 	private int id;
 
+	/**
+	 * Initialize a new ClientHandler.
+	 * @param socket
+	 * @param db
+	 */
 	public ClientHandler(Socket socket, DatabaseConnection db) {
 		this.socket = socket;
 		try {
@@ -39,6 +44,9 @@ public class ClientHandler extends Thread {
 		this.db = db;
 	}
 
+	/**
+	 * Listen for new objects from the inputstream and handle the messages.
+	 */
 	public void run() {
 		while (isAlive) {
 			try {
@@ -54,7 +62,6 @@ public class ClientHandler extends Thread {
 					isAlive = false;
 				}
 
-				System.out.println(obj);
 				if (obj instanceof LoginMessage) {
 					LoginMessage message = (LoginMessage) obj;
 					String user = message.getUsername();
@@ -108,9 +115,7 @@ public class ClientHandler extends Thread {
 							e.printStackTrace();
 						}
 					}
-				} else if (obj instanceof LogoutMessage) {
-					isAlive = false;
-				}
+				} 
 			} catch (IOException e) {
 				isAlive = false;
 			} 

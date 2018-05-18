@@ -39,7 +39,6 @@ public class MainController extends Application {
 	private RegisterViewController registerController;
 	private LivefeedViewController livefeedController;
 	private UserStatisticsViewController userStatsController;
-	private TrackerViewController trackerController;
 	
 	private ServerConnection serverConnection;
 	
@@ -220,7 +219,7 @@ public class MainController extends Application {
 	}
 	
 	public void logout() {
-		serverConnection.disconnect();
+		serverConnection.close();
 	}
 	
 	public void onSearch(String[] symbols) {
@@ -235,29 +234,6 @@ public class MainController extends Application {
 	
 	public void onUserDataReceived(HashMap<String, Integer> mapMe, HashMap<String, Integer> mapAll) {
 		userStatsController.putUserData(mapMe, mapAll);
-	}
-		
-	public void sendTracker(String symbol, String email, double limit) {
-		serverConnection.sendTracker(symbol,email, limit);
-	}
-	
-	public void openTrackers() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("view/TrackerView.fxml"));
-			
-			Scene scene = new Scene(loader.load());
-			trackerController = loader.getController();
-			trackerController.setMainController(this);
-			Stage stage = new Stage();
-			stage.setTitle("Add trackers");
-			stage.setScene(scene);
-			stage.initModality(Modality.WINDOW_MODAL);
-			stage.initOwner(primaryStage);
-			stage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void openSettings() {

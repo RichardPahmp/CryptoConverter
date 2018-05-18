@@ -2,6 +2,11 @@ package crypto.messages;
 
 import java.io.Serializable;
 
+/**
+ * Sent from the client to request the registration of a new user.
+ * @author Richard
+ *
+ */
 public class RegisterMessage implements Serializable {
 	
 	private String username;

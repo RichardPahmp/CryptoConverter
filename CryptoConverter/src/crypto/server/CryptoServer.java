@@ -9,6 +9,10 @@ public class CryptoServer {
 	private DatabaseConnection databaseConnection;
 	private ServerSocket serverSocket;
 
+	/**
+	 * Create a server listening for connection on the given port.
+	 * @param port
+	 */
 	public CryptoServer(int port) {
 		try {
 			serverSocket = new ServerSocket(port);
@@ -23,6 +27,9 @@ public class CryptoServer {
 		}
 	}
 
+	/**
+	 * Start listening for new connections.
+	 */
 	public void start() {
 		try {
 			while (true) {

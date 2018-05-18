@@ -10,6 +10,9 @@ public class Config {
 
 	private static String FILE_PATH = "files/settings.ser";
 
+	/**
+	 * Saves the current settings to a savefile
+	 */
 	public static void saveToDisk() {
 		try {
 			FileOutputStream fos = new FileOutputStream(FILE_PATH);
@@ -23,6 +26,9 @@ public class Config {
 		}
 	}
 
+	/**
+	 * Loads settings from a savefile.
+	 */
 	public static void loadFromDisk() {
 		try {
 			FileInputStream fis = new FileInputStream(FILE_PATH);

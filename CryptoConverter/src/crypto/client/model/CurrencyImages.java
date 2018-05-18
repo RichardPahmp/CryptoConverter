@@ -19,6 +19,11 @@ public class CurrencyImages {
 		return imageMap.containsKey(symbol);
 	}
 	
+	/**
+	 * Loads a new image and saves it for later use.
+	 * @param symbol The symbol of the coin
+	 * @param imageURL The imageURL of the coin
+	 */
 	public static void load(String symbol, String imageURL) {
 		if(imageURL == null) {
 			return;
@@ -38,6 +43,12 @@ public class CurrencyImages {
 		}
 	}
 	
+	/**
+	 * Gets an image from the saved images map. If it's not in the map it's loaded from the API.
+	 * @param symbol
+	 * @param imageURL
+	 * @return
+	 */
 	public static Image get(String symbol, String imageURL) {
 		if(!imageMap.containsKey(symbol)) {
 			CurrencyImages.load(symbol, imageURL);
@@ -45,6 +56,11 @@ public class CurrencyImages {
 		return imageMap.get(symbol);
 	}
 	
+	/**
+	 * Get an image from the saved images map. Will return null if the image is not loaded.
+	 * @param symbol
+	 * @return
+	 */
 	public static Image get(String symbol) {
 		return imageMap.get(symbol);
 	}

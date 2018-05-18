@@ -2,6 +2,11 @@ package crypto.messages;
 
 import java.io.Serializable;
 
+/**
+ * A message telling the server that a new search was made on the client
+ * @author Richard
+ *
+ */
 public class SearchMessage implements Serializable {
 	
 	private String[] symbols;

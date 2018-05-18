@@ -12,8 +12,6 @@ import java.util.HashMap;
 import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
-import crypto.messages.LogoutMessage;
-import crypto.messages.NewTrackerMessage;
 import crypto.messages.RegisterFailedMessage;
 import crypto.messages.RegisterMessage;
 import crypto.messages.RegisterSuccessfulMessage;
@@ -67,20 +65,9 @@ public class ServerConnection {
 		return false;
 	}
 	
-	public void disconnect() {
-		if(isAlive) {
-			LogoutMessage message = new LogoutMessage();
-			try {
-				oos.writeObject(message);
-				oos.flush();
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				onDisconnect();
-			}
-		}
-	}
-	
+	/**
+	 * Close the socket.
+	 */
 	public void close() {
 		try {
 			if(socket != null) {
@@ -91,8 +78,14 @@ public class ServerConnection {
 			e.printStackTrace();
 		}
 		isAlive = false;
+		onDisconnect();
 	}
 	
+	/**
+	 * Sends a login request to the server.
+	 * @param user
+	 * @param pass
+	 */
 	public void login(String user, String pass) {
 		LoginMessage message = new LoginMessage(user, pass);
 		try {
@@ -104,6 +97,11 @@ public class ServerConnection {
 		}
 	}
 	
+	/**
+	 * Sends a register request to the server.
+	 * @param user
+	 * @param pass
+	 */
 	public void register(String user, String pass) {
 		RegisterMessage message = new RegisterMessage(user, pass);
 		try {
@@ -115,6 +113,10 @@ public class ServerConnection {
 		}
 	}
 	
+	/**
+	 * Sends a search message to the server, indicating a new search was made.
+	 * @param symbols
+	 */
 	public void newSearch(String[] symbols) {
 		SearchMessage message = new SearchMessage(symbols);
 		try {
@@ -126,6 +128,9 @@ public class ServerConnection {
 		}
 	}
 	
+	/**
+	 * Send a request for a userdata update to the server.
+	 */
 	public void requestUserData() {
 		RequestUserDataMessage message = new RequestUserDataMessage();
 		try {
@@ -137,6 +142,9 @@ public class ServerConnection {
 		}
 	}
 	
+	/**
+	 * Disconnects the client from the server.
+	 */
 	private void onDisconnect() {
 		mainController.onDisconnect();
 		try {
@@ -147,16 +155,9 @@ public class ServerConnection {
 		}
 	}
 	
-	public void sendTracker(String symbol, String email, double limit) {
-		NewTrackerMessage message = new NewTrackerMessage(symbol, email, limit);
-		try {
-			oos.writeObject(message);
-			oos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
+	/**
+	 * Listens for new messages from the server and tells the mainController what to do.
+	 */
 	private void run() {
 		while(isAlive) {
 			Object obj = null;;
