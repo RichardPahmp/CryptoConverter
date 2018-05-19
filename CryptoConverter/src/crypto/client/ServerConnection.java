@@ -12,6 +12,7 @@ import java.util.HashMap;
 import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
+import crypto.messages.LogoutMessage;
 import crypto.messages.RegisterFailedMessage;
 import crypto.messages.RegisterMessage;
 import crypto.messages.RegisterSuccessfulMessage;
@@ -29,6 +30,7 @@ public class ServerConnection {
 	private ObjectInputStream ois;
 	private ObjectOutputStream  oos;
 	
+	private boolean loggedIn = false;
 	private boolean isAlive = false;
 	
 	public ServerConnection(MainController controller) {
@@ -82,6 +84,19 @@ public class ServerConnection {
 	}
 	
 	/**
+	 * Logout from the current user
+	 */
+	public void logout() {
+		LogoutMessage message = new LogoutMessage();
+		try {
+			oos.writeObject(message);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Sends a login request to the server.
 	 * @param user
 	 * @param pass
@@ -118,6 +133,7 @@ public class ServerConnection {
 	 * @param symbols
 	 */
 	public void newSearch(String[] symbols) {
+		if(!loggedIn) return;
 		SearchMessage message = new SearchMessage(symbols);
 		try {
 			oos.writeObject(message);
@@ -173,6 +189,7 @@ public class ServerConnection {
 			
 			if(obj instanceof LoginSuccessfulMessage) {
 				LoginSuccessfulMessage message = (LoginSuccessfulMessage)obj;
+				loggedIn = true;
 				mainController.onLoginSuccess(message.getUsername());
 			} else if(obj instanceof LoginFailedMessage) {
 				mainController.onLoginFailed();
@@ -183,6 +200,9 @@ public class ServerConnection {
 			} else if(obj instanceof UserDataMessage) {
 				UserDataMessage message = (UserDataMessage)obj;
 				mainController.onUserDataReceived(message.getMapMe(), message.getMapAll());
+			} else if(obj instanceof LogoutMessage) {
+				mainController.onLogout();
+				loggedIn = false;
 			}
 		}
 	}

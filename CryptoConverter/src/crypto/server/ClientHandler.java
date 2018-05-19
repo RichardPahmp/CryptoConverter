@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * Serverside connection to a client.
  * 
- * @author Emil �gge
+ * @author Emil �gge, Richard Pahmp
  *
  */
 public class ClientHandler extends Thread {
@@ -21,27 +21,43 @@ public class ClientHandler extends Thread {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private DatabaseConnection db;
+	private ServerViewController viewController;
 
 	private boolean isAlive = false;
 	
+	private boolean loggedIn = false;
 	private int id;
+	private String username = "ERROR";
 
 	/**
 	 * Initialize a new ClientHandler.
 	 * @param socket
 	 * @param db
 	 */
-	public ClientHandler(Socket socket, DatabaseConnection db) {
+	public ClientHandler(ServerViewController viewController, Socket socket, DatabaseConnection db) {
+		this.viewController = viewController;
 		this.socket = socket;
+		this.db = db;
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		isAlive = true;
-		this.db = db;
+		
+	}
+	
+	/**
+	 * Stops the clienthandler thread.
+	 */
+	public void close() {
+		isAlive = false;
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -63,6 +79,8 @@ public class ClientHandler extends Thread {
 				}
 
 				if (obj instanceof LoginMessage) {
+					viewController.log("Login request received from " + socket.getInetAddress());
+					if(loggedIn) continue;
 					LoginMessage message = (LoginMessage) obj;
 					String user = message.getUsername();
 					String pass = message.getPassword();
@@ -74,6 +92,9 @@ public class ClientHandler extends Thread {
 							oos.flush();
 						} else {
 							this.id = tempID;
+							username = message.getUsername();
+							loggedIn = true;
+							viewController.log(socket.getInetAddress() + " logged in as " + username);
 							LoginSuccessfulMessage tempMess = new LoginSuccessfulMessage(user);
 							oos.writeObject(tempMess);
 							oos.flush();
@@ -84,6 +105,8 @@ public class ClientHandler extends Thread {
 						oos.flush();
 					}
 				} else if (obj instanceof RegisterMessage) {
+					viewController.log("Register request received from " + username);
+					if(loggedIn) continue;
 					RegisterMessage message = (RegisterMessage) obj;
 					try {
 						db.createNewUser(message.getUsername(), message.getPassword());
@@ -96,6 +119,8 @@ public class ClientHandler extends Thread {
 						oos.flush();
 					}
 				} else if (obj instanceof RequestUserDataMessage) {
+					viewController.log("userdata request received from " + username);
+					if(!loggedIn) continue;
 					try {
 						HashMap<String, Integer> mapMe = db.getSearches(id);
 						HashMap<String, Integer> mapAll = db.getAllSearches();
@@ -104,9 +129,10 @@ public class ClientHandler extends Thread {
 						oos.flush();
 					} catch (SQLException e) {
 						e.printStackTrace();
-						System.out.println(e.getMessage());
 					}
 				} else if (obj instanceof SearchMessage) {
+					if(!loggedIn) continue;
+					viewController.log("New search logged by " + username);
 					String[] symbols = ((SearchMessage) obj).getSymbols();
 					for (String str : symbols) {
 						try {
@@ -115,12 +141,20 @@ public class ClientHandler extends Thread {
 							e.printStackTrace();
 						}
 					}
-				} 
+				} else if (obj instanceof LogoutMessage) {
+					viewController.log(username + " has logged out");
+					loggedIn = false;
+					username = "ERROR";
+					LogoutMessage message = new LogoutMessage();
+					oos.writeObject(message);
+					oos.flush();
+				}
 			} catch (IOException e) {
 				isAlive = false;
 			} 
 		}
 		try {
+			viewController.log("Closing connection to " + username + "(" + socket.getInetAddress() + ")");
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

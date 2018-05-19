@@ -194,7 +194,7 @@ public class MainController extends Application {
 	}
 	
 	public void onDisconnect() {
-		rootController.showLogin();
+		rootController.showRetry();
 		if(userDataTab != null) {
 			Platform.runLater(() -> tabPane.getTabs().remove(userDataTab));
 		}
@@ -219,7 +219,11 @@ public class MainController extends Application {
 	}
 	
 	public void logout() {
-		serverConnection.close();
+		serverConnection.logout();
+	}
+	
+	public void onLogout() {
+		rootController.showLogin();
 	}
 	
 	public void onSearch(String[] symbols) {
