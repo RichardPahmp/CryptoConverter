@@ -193,6 +193,16 @@ public class GraphViewController implements Initializable {
 		}
 		return list;
 	}
+	
+	@FXML
+	private void onSaveToFile() {
+		
+	}
+	
+	@FXML
+	private void onSaveToClipboard() {
+		
+	}
 
 	/**
 	 * Sets the MainController of this controller.

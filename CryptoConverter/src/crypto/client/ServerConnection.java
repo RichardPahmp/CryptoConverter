@@ -149,7 +149,9 @@ public class ServerConnection {
 		mainController.onDisconnect();
 		try {
 			isAlive = false;
-			socket.close();
+			if(socket != null) {
+				socket.close();
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
