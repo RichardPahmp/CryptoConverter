@@ -33,7 +33,7 @@ import java.util.Optional;
 public class ConverterViewController implements ConverterPaneListener {
 
 	private MainController mainController;
-	
+
 	private boolean unsavedChanges;
 
 	private static DecimalFormat df = new DecimalFormat("#.####");
@@ -44,8 +44,8 @@ public class ConverterViewController implements ConverterPaneListener {
 	private ObservableList<Currency> currencies = FXCollections.observableArrayList();
 
 	/**
-	 * The method run by the JavaFX loader when the view has finished loading.
-	 * Loads ConverterData from disk and adds it to the view.
+	 * The method run by the JavaFX loader when the view has finished loading. Loads
+	 * ConverterData from disk and adds it to the view.
 	 */
 	@FXML
 	private void initialize() {
@@ -69,10 +69,10 @@ public class ConverterViewController implements ConverterPaneListener {
 		while (iterator.hasNext()) {
 			addConverterPane(iterator.next());
 		}
-		
+
 		unsavedChanges = false;
 	}
-	
+
 	/**
 	 * Creates a ConverterPane and adds it to the view.
 	 */
@@ -84,9 +84,11 @@ public class ConverterViewController implements ConverterPaneListener {
 	}
 
 	/**
-	 * Creates a ConverterPane and adds it to the view with the values in the given ConverterData.
+	 * Creates a ConverterPane and adds it to the view with the values in the given
+	 * ConverterData.
 	 *
-	 * @param data The data to initialize the pane with.
+	 * @param data
+	 *            The data to initialize the pane with.
 	 */
 	private void addConverterPane(ConverterData data) {
 		ConverterPane pane = createConverterPane();
@@ -94,7 +96,7 @@ public class ConverterViewController implements ConverterPaneListener {
 		vBox.getChildren().add(vBox.getChildren().size() - 1, pane);
 		unsavedChanges = true;
 	}
-	
+
 	private ConverterPane createConverterPane() {
 		ConverterPane pane = new ConverterPane(currencies);
 		pane.addConverterPaneListener(this);
@@ -104,7 +106,8 @@ public class ConverterViewController implements ConverterPaneListener {
 	/**
 	 * Callback for when the user presses the close button on a ConverterPane.
 	 *
-	 * @param pane The pane that called this listener.
+	 * @param pane
+	 *            The pane that called this listener.
 	 */
 	@Override
 	public void closeButtonClicked(ConverterPane pane) {
@@ -113,13 +116,20 @@ public class ConverterViewController implements ConverterPaneListener {
 	}
 
 	/**
-	 * Callback for when the user presses enter while the left textfield is selected.
+	 * Callback for when the user presses enter while the left textfield is
+	 * selected.
 	 *
-	 * @param pane The pane that called this listener.
-	 * @param from The currency to convert from.
-	 * @param to   The currency to convert to.
-	 * @param sum  The sum to convert to a different currency.
-	 * @param date The conversion will be done with the currency values at the given date.
+	 * @param pane
+	 *            The pane that called this listener.
+	 * @param from
+	 *            The currency to convert from.
+	 * @param to
+	 *            The currency to convert to.
+	 * @param sum
+	 *            The sum to convert to a different currency.
+	 * @param date
+	 *            The conversion will be done with the currency values at the given
+	 *            date.
 	 */
 	@Override
 	public void leftTextfieldAction(ConverterPane pane, Currency from, Currency to, double sum, LocalDate date) {
@@ -130,29 +140,35 @@ public class ConverterViewController implements ConverterPaneListener {
 				double coinValue = price.get(to.getSymbol());
 				pane.setRightTextfieldText(df.format(coinValue * sum));
 			} else {
-				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
+				Map<String, Double> price = Historic.getPriceAtTime((int) (TimeUtil.dateToTimestamp(date) / 1000),
+						from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
 				pane.setRightTextfieldText(df.format(coinValue * sum));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		unsavedChanges = true;
-		mainController.onSearch(new String[]{from.getSymbol(), to.getSymbol()});
+		mainController.onSearch(new String[] { from.getSymbol(), to.getSymbol() });
 	}
 
 	/**
-	 * Callback for when the user presses enter while the right textfield is selected.
+	 * Callback for when the user presses enter while the right textfield is
+	 * selected.
 	 *
-	 * @param pane The pane that called this listener.
-	 * @param from The currency to convert from.
-	 * @param to   The currency to convert to.
-	 * @param sum  The sum to convert to a different currency.
-	 * @param date The conversion will be done with the currency values at the given date.
+	 * @param pane
+	 *            The pane that called this listener.
+	 * @param from
+	 *            The currency to convert from.
+	 * @param to
+	 *            The currency to convert to.
+	 * @param sum
+	 *            The sum to convert to a different currency.
+	 * @param date
+	 *            The conversion will be done with the currency values at the given
+	 *            date.
 	 */
 	@Override
 	public void rightTextfieldAction(ConverterPane pane, Currency from, Currency to, double sum, LocalDate date) {
@@ -163,19 +179,18 @@ public class ConverterViewController implements ConverterPaneListener {
 				double coinValue = price.get(to.getSymbol());
 				pane.setLeftTextfieldText(df.format(coinValue * sum));
 			} else {
-				Map<String, Double> price = Historic.getPriceAtTime((int)(TimeUtil.dateToTimestamp(date) / 1000), from.getSymbol(), to.getSymbol());
+				Map<String, Double> price = Historic.getPriceAtTime((int) (TimeUtil.dateToTimestamp(date) / 1000),
+						from.getSymbol(), to.getSymbol());
 				double coinValue = price.get(to.getSymbol());
 				pane.setLeftTextfieldText(df.format(coinValue * sum));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		unsavedChanges = true;
-		mainController.onSearch(new String[]{from.getSymbol(), to.getSymbol()});
+		mainController.onSearch(new String[] { from.getSymbol(), to.getSymbol() });
 	}
 
 	/**
@@ -197,35 +212,36 @@ public class ConverterViewController implements ConverterPaneListener {
 		}
 		unsavedChanges = false;
 	}
-	
+
 	/**
 	 * Sets the MainController of this controller.
+	 * 
 	 * @param main
 	 */
 	public void setMainController(MainController main) {
 		this.mainController = main;
 	}
-	
+
 	public void onClosing() {
-		if(unsavedChanges) {
+		if (unsavedChanges) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("Unsaved Changes");
 			alert.setHeaderText("You have unsaved changes.");
 			alert.setContentText("Do you wish to save?");
-			
+
 			ButtonType buttonTypeYes = new ButtonType("Yes");
 			ButtonType buttonTypeNo = new ButtonType("No");
-			
+
 			alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-			
+
 			Optional<ButtonType> result = alert.showAndWait();
-			
-			if(result.get() == buttonTypeYes) {
+
+			if (result.get() == buttonTypeYes) {
 				saveData();
-			} 
+			}
 		}
 	}
-	
+
 	@Override
 	public void onChange() {
 		unsavedChanges = true;
@@ -234,7 +250,7 @@ public class ConverterViewController implements ConverterPaneListener {
 	@Override
 	public void moveUp(ConverterPane pane) {
 		int index = vBox.getChildren().indexOf(pane);
-		if(index != 0) {
+		if (index != 0) {
 			vBox.getChildren().remove(index);
 			vBox.getChildren().add(index - 1, pane);
 		}
@@ -243,7 +259,7 @@ public class ConverterViewController implements ConverterPaneListener {
 	@Override
 	public void moveDown(ConverterPane pane) {
 		int index = vBox.getChildren().indexOf(pane);
-		if(index != vBox.getChildren().size() - 2) {
+		if (index != vBox.getChildren().size() - 2) {
 			vBox.getChildren().remove(index);
 			vBox.getChildren().add(index + 1, pane);
 		}

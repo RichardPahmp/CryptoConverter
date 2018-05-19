@@ -33,6 +33,7 @@ public class SearchUtil {
 
 	/**
 	 * Makes the given combobox searchable.
+	 * 
 	 * @param cmbBox
 	 */
 	public SearchUtil(ComboBox<Currency> cmbBox) {
@@ -46,16 +47,17 @@ public class SearchUtil {
 
 	/**
 	 * Handle keyboard input
+	 * 
 	 * @param e
 	 */
 	public void onKeyPressed(KeyEvent e) {
-		if(!open) {
+		if (!open) {
 			return;
 		}
-		
+
 		ObservableList<Currency> filteredItems = FXCollections.observableArrayList();
 		KeyCode code = e.getCode();
-		
+
 		if (code.isLetterKey()) {
 			filter = filter + e.getText();
 		}
@@ -80,8 +82,10 @@ public class SearchUtil {
 		} else {
 			Stream<Currency> items = cmbBox.getItems().stream();
 			String item = filter.toString().toLowerCase();
-			items.filter(c -> c.getSymbol().toLowerCase().contains(item) || c.getCoinName().toLowerCase().contains(item)).forEach(filteredItems::add);
-			if(filter.equals("")) {
+			items.filter(
+					c -> c.getSymbol().toLowerCase().contains(item) || c.getCoinName().toLowerCase().contains(item))
+					.forEach(filteredItems::add);
+			if (filter.equals("")) {
 				showTooltip("Type to filter currencies");
 			} else {
 				showTooltip(item);
@@ -92,6 +96,7 @@ public class SearchUtil {
 
 	/**
 	 * Hide the tooltip when the combobox is hidden.
+	 * 
 	 * @param e
 	 */
 	public void handleOnHiding(Event e) {
@@ -101,24 +106,26 @@ public class SearchUtil {
 		Currency curr = cmbBox.getSelectionModel().getSelectedItem();
 		cmbBox.getItems().setAll(items);
 		cmbBox.getSelectionModel().select(curr);
-		if(cmbBox.getValue() == null) {
+		if (cmbBox.getValue() == null) {
 			cmbBox.getSelectionModel().select(lastSelectedIndex);
 		}
 	}
 
 	/**
 	 * Show the tooltip when the combobox is shown.
+	 * 
 	 * @param e
 	 */
 	public void handleOnShow(Event e) {
 		open = true;
 		lastSelectedIndex = cmbBox.getSelectionModel().getSelectedIndex();
-		
+
 		showTooltip("Type to filter currencies");
 	}
-	
+
 	/**
 	 * Shows the tooltip to the screen with the given text.
+	 * 
 	 * @param text
 	 */
 	private void showTooltip(String text) {
