@@ -211,7 +211,6 @@ public class ConverterPane extends HBox {
 	@FXML
 	private void leftTextfieldAction() {
 		timelineLeftField.stop();
-		System.out.println("lala");
 		double sum;
 		try {
 			sum = Double.parseDouble(leftTextField.getText());
