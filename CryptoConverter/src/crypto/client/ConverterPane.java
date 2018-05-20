@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -105,14 +106,26 @@ public class ConverterPane extends HBox {
 		timelineLeftField = new Timeline();
 		timelineRightField = new Timeline();
 		
-		KeyFrame keyFrameUpdateLeft = new KeyFrame(Duration.millis(1000), e -> leftTextfieldAction());
-		KeyFrame keyFrameUpdateRight = new KeyFrame(Duration.millis(1000), e -> rightTextfieldAction());
+		KeyFrame keyFrameUpdateLeft = new KeyFrame(Duration.millis(750), e -> leftTextfieldAction());
+		KeyFrame keyFrameUpdateRight = new KeyFrame(Duration.millis(750), e -> rightTextfieldAction());
 		
 		timelineLeftField.getKeyFrames().add(keyFrameUpdateLeft);
 		timelineRightField.getKeyFrames().add(keyFrameUpdateRight);
 		
-		leftTextField.setOnKeyPressed(e -> timelineLeftField.playFromStart());
-		rightTextField.setOnKeyPressed(e -> timelineRightField.playFromStart());
+		leftTextField.setOnKeyPressed(e -> {
+			if(e.getCode() == KeyCode.ENTER) {
+				leftTextfieldAction();
+			} else {
+				timelineLeftField.playFromStart();
+			}
+		});
+		rightTextField.setOnKeyPressed(e -> {
+			if(e.getCode() == KeyCode.ENTER) {
+				rightTextfieldAction();
+			} else {
+				timelineRightField.playFromStart();
+			}
+		});
 	}
 
 	/**
@@ -198,6 +211,7 @@ public class ConverterPane extends HBox {
 	@FXML
 	private void leftTextfieldAction() {
 		timelineLeftField.stop();
+		System.out.println("lala");
 		double sum;
 		try {
 			sum = Double.parseDouble(leftTextField.getText());

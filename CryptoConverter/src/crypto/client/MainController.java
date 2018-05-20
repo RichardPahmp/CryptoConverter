@@ -171,7 +171,7 @@ public class MainController extends Application {
 	
 	public void tryConnect() {
 		if(serverConnection.connect()) {
-			rootController.setConnectionAvailible();
+			rootController.setLoginAvailible();
 		} else {
 			rootController.setNoConnection();
 		}
@@ -179,7 +179,6 @@ public class MainController extends Application {
 	
 	public void onLoginSuccess(String username) {
 		rootController.setLoggedInAs(username);
-		rootController.showLogout();
 		addUserDataTab();
 	}
 	
@@ -194,7 +193,7 @@ public class MainController extends Application {
 	}
 	
 	public void onDisconnect() {
-		rootController.showRetry();
+		rootController.setNoConnection();
 		if(userDataTab != null) {
 			Platform.runLater(() -> tabPane.getTabs().remove(userDataTab));
 		}
@@ -223,7 +222,7 @@ public class MainController extends Application {
 	}
 	
 	public void onLogout() {
-		rootController.showLogin();
+		rootController.setLoginAvailible();
 	}
 	
 	public void onSearch(String[] symbols) {

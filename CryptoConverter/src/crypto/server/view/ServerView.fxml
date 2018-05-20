@@ -27,6 +27,7 @@
             <ButtonBar buttonMinWidth="50.0" BorderPane.alignment="CENTER">
               <buttons>
                 <Button mnemonicParsing="false" onAction="#onRestart" text="Restart" />
+                  <Button mnemonicParsing="false" onAction="#onClear" text="Clear" />
               </buttons>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

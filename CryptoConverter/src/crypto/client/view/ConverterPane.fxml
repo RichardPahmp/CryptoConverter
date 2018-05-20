@@ -6,8 +6,8 @@
 <fx:root alignment="CENTER" type="HBox" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ComboBox fx:id="leftComboBox" prefWidth="150.0" />
-      <TextField fx:id="leftTextField" onAction="#leftTextfieldAction" />
-      <TextField fx:id="rightTextField" onAction="#rightTextfieldAction" />
+      <TextField fx:id="leftTextField"/>
+      <TextField fx:id="rightTextField"/>
       <ComboBox fx:id="rightComboBox" prefWidth="150.0" />
       <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="151.0" />
       <Button fx:id="closeButton" mnemonicParsing="false" onAction="#closeButtonClicked" text="Close" />

@@ -18,7 +18,7 @@ public class RootLayoutController{
 	
 	private static String LOGIN_STRING = "Enter your username and password to login or register a new account.";
 	private static String LOGGED_IN_STRING = "You are logged in as: ";
-	private static String NO_CONNECTION_STRING = "Could connect to the server, please try again later.";
+	private static String NO_CONNECTION_STRING = "Could not connect to the server, please try again later.";
 
 	private MainController mainController;
 	
@@ -40,19 +40,19 @@ public class RootLayoutController{
 	@FXML
 	private PasswordField passwordField;
 	
-	public void showLogin() {
+	private void showLogin() {
 		logoutBox.setVisible(false);
 		loginBox.setVisible(true);
 		retryBox.setVisible(false);
 	}
 	
-	public void showLogout() {
+	private void showLogout() {
 		logoutBox.setVisible(true);
 		loginBox.setVisible(false);
 		retryBox.setVisible(false);
 	}
 	
-	public void showRetry() {
+	private void showRetry() {
 		logoutBox.setVisible(false);
 		loginBox.setVisible(false);
 		retryBox.setVisible(true);
@@ -120,12 +120,13 @@ public class RootLayoutController{
 		this.mainController = main;
 	}
 	
-	public void setConnectionAvailible() {
+	public void setLoginAvailible() {
 		showLogin();
 		Platform.runLater(() -> loginLabel.setText(LOGIN_STRING));
 	}
 
 	public void setLoggedInAs(String username) {
+		showLogout();
 		Platform.runLater(() -> loginLabel.setText(LOGGED_IN_STRING + username));
 	}
 	
