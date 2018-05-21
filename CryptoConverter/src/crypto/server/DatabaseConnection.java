@@ -6,8 +6,8 @@ import java.util.Properties;
 
 public class DatabaseConnection {
 
-	private static String dbName = "CryptoConverterDB";
-	private static String URL = "jdbc:mysql://cryptoconverterdb.c7y86ozj9t1e.eu-west-2.rds.amazonaws.com:3306/" + dbName + "?useSSL=false";
+	private static String dbName;
+	private static String URL;
 	
 	private static String USERS_TABLE = "USERS";
 	private static String DATA_TABLE = "DATA";
@@ -28,9 +28,13 @@ public class DatabaseConnection {
 	 * @throws SQLException
 	 */
 	public DatabaseConnection() throws SQLException {
+		DBConfig config = new DBConfig();
+		dbName = config.getDatabaseName();
+		URL = "jdbc:mysql://" + config.getUrl() + ":" + config.getPort() + "/" + dbName + "?useSSL=false";
+		
 		Properties props = new Properties();
-		props.put("user", "test");
-		props.put("password", "asd123");
+		props.put("user", config.getUsername());
+		props.put("password", config.getPassword());
 		DriverManager.setLoginTimeout(5);
 		connection = DriverManager.getConnection(URL, props);
 		connection.setAutoCommit(false);

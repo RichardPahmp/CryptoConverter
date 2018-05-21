@@ -56,12 +56,7 @@ public class ServerConnection {
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.WARNING);
-//				alert.setTitle("Failed to connect to the server.");
-//				alert.setHeaderText("No connection could be made to the server");
-//				alert.setContentText("Try again later");
-//				alert.showAndWait();
+				//No connection could be made. UI handles this exception.
 			} 
 		}
 		return false;

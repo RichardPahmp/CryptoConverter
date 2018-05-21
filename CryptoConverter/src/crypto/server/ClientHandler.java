@@ -27,7 +27,7 @@ public class ClientHandler extends Thread {
 	
 	private boolean loggedIn = false;
 	private int id;
-	private String username = "ERROR";
+	private String username = "not_logged_in";
 
 	/**
 	 * Initialize a new ClientHandler.
@@ -144,7 +144,7 @@ public class ClientHandler extends Thread {
 				} else if (obj instanceof LogoutMessage) {
 					viewController.log(username + " has logged out");
 					loggedIn = false;
-					username = "ERROR";
+					username = "not_logged_in";
 					LogoutMessage message = new LogoutMessage();
 					oos.writeObject(message);
 					oos.flush();

@@ -1,6 +1,6 @@
 package crypto.client;
 
-import crypto.client.model.Config;
+import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.util.ConverterData;
 import crypto.util.SearchUtil;
@@ -76,8 +76,8 @@ public class ConverterPane extends HBox {
 
 		leftComboBox.getItems().setAll(list);
 		rightComboBox.getItems().setAll(list);
-		selectCurrencyLeft(Config.DEFAULT_SYMBOL);
-		selectCurrencyRight(Config.DEFAULT_SYMBOL);
+		selectCurrencyLeft(ClientConfig.DEFAULT_SYMBOL);
+		selectCurrencyRight(ClientConfig.DEFAULT_SYMBOL);
 
 		leftComboBox.setCellFactory(createCellFactory());
 		leftComboBox.setButtonCell(createListCell());

@@ -20,6 +20,7 @@ import me.joshmcfarlin.CryptoCompareAPI.Utils.OutOfCallsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.Map;
@@ -69,6 +70,10 @@ public class ConverterViewController implements ConverterPaneListener {
 		while (iterator.hasNext()) {
 			addConverterPane(iterator.next());
 		}
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+		formatSymbols.setDecimalSeparator('.');
+		df = new DecimalFormat("#.####", formatSymbols);
 
 		unsavedChanges = false;
 	}

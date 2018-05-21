@@ -1,6 +1,6 @@
 package crypto.client;
 
-import crypto.client.model.Config;
+import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
 import crypto.util.SearchUtil;
@@ -38,7 +38,7 @@ public class SettingsViewController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		currencyComboBox.getItems().setAll(CurrencyList.getCurrencyList());
 		for(Currency currency : currencyComboBox.getItems()) {
-			if(currency.getSymbol().equals(Config.DEFAULT_SYMBOL)) {
+			if(currency.getSymbol().equals(ClientConfig.DEFAULT_SYMBOL)) {
 				currencyComboBox.getSelectionModel().select(currency);
 				break;
 			}
@@ -46,7 +46,7 @@ public class SettingsViewController implements Initializable {
 		
 		populateStyleComboBox();
 		
-		slider.setValue(Config.LIVE_FEED_RATE);
+		slider.setValue(ClientConfig.LIVE_FEED_RATE);
 		slider.setMin(5);
 		slider.setMax(300);
 		slider.setBlockIncrement(10);
@@ -64,16 +64,11 @@ public class SettingsViewController implements Initializable {
 	 * Check the css directory for .css files and load them into a combobox.
 	 */
 	private void populateStyleComboBox() {
-		File folder = new File("CryptoConverter/files/css");
+		File folder = new File("files/css");
 		File[] fileList = folder.listFiles();
 		for(File file : fileList) {
-			try {
-				StyleListItem item = new StyleListItem(file.getName(), file.toURI().toURL().toExternalForm());
-				styleComboBox.getItems().add(item);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			StyleListItem item = new StyleListItem(file.getName(), "files/css/" + file.getName());
+			styleComboBox.getItems().add(item);
 		}
 		styleComboBox.getSelectionModel().select(0);
 	}
@@ -81,13 +76,13 @@ public class SettingsViewController implements Initializable {
 	@FXML
 	private void onApply() {
 		applyChanges();
-		Config.saveToDisk();
+		ClientConfig.saveToDisk();
 	}
 
 	@FXML
 	private void onSave() {
 		applyChanges();
-		Config.saveToDisk();
+		ClientConfig.saveToDisk();
 		closeWindow();
 	}
 	
@@ -120,8 +115,9 @@ public class SettingsViewController implements Initializable {
 			mainController.changeStyle(item.urlString);
 		}
 		
-		Config.LIVE_FEED_RATE = (int)slider.getValue();
-		Config.DEFAULT_SYMBOL = currencyComboBox.getValue().getSymbol();
+		ClientConfig.STYLE_PATH = styleComboBox.getValue().urlString;
+		ClientConfig.LIVE_FEED_RATE = (int)slider.getValue();
+		ClientConfig.DEFAULT_SYMBOL = currencyComboBox.getValue().getSymbol();
 		unsavedChanges = false;
 	}
 	

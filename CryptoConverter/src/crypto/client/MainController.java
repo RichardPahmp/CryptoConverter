@@ -1,6 +1,6 @@
 package crypto.client;
 
-import crypto.client.model.Config;
+import crypto.client.model.ClientConfig;
 import crypto.client.model.CurrencyList;
 import crypto.util.LiveCurrencyData;
 import javafx.application.Application;
@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -31,6 +32,7 @@ public class MainController extends Application {
 	
 	private Scene primaryScene;
 	private Scene settingsScene;
+	private Scene registerScene;
 	
 	private ConverterViewController converterController;
 	private GraphViewController graphController;
@@ -59,6 +61,17 @@ public class MainController extends Application {
 		serverConnection = new ServerConnection(this);
 		
 		new Thread(this::tryConnect).start();
+	}
+
+	@Override
+	public void init() throws Exception {
+		try {
+			CurrencyList.loadCurrencyList();
+			ClientConfig.loadFromDisk();
+	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -105,26 +118,15 @@ public class MainController extends Application {
 			tabPane.getTabs().add(liveTab);
 
 			primaryScene = new Scene(rootLayout);
+			primaryScene.getStylesheets().add("file:" + ClientConfig.STYLE_PATH);
 			primaryStage.setScene(primaryScene);
 			primaryStage.show();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 
-	@Override
-	public void init() throws Exception {
-		try {
-			CurrencyList.loadCurrencyList();
-			Config.loadFromDisk();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void addUserDataTab() {
 		userDataTab = new Tab("User data");
 		userDataTab.setClosable(false);
@@ -164,9 +166,13 @@ public class MainController extends Application {
 	
 	public void changeStyle(String css) {
 		primaryScene.getStylesheets().clear();
-		primaryScene.getStylesheets().add(css);
+		primaryScene.getStylesheets().add("file:" + css);
 		settingsScene.getStylesheets().clear();
-		settingsScene.getStylesheets().add(css);
+		settingsScene.getStylesheets().add("file:" + css);
+		if(registerScene != null) {
+			registerScene.getStylesheets().clear();
+			registerScene.getStylesheets().add("file:" + css);
+		}
 	}
 	
 	public void tryConnect() {
@@ -244,7 +250,8 @@ public class MainController extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/SettingsView.fxml"));
 			
-			settingsScene = new Scene(loader.load(), 600, 400);
+			settingsScene = new Scene(loader.load());
+			settingsScene.getStylesheets().add("file:" + ClientConfig.STYLE_PATH);
 			settingsController = loader.getController();
 			settingsController.setMainController(this);
 			Stage stage = new Stage();
@@ -256,7 +263,6 @@ public class MainController extends Application {
 			stage.show();
 			settingsStage = stage;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -266,13 +272,14 @@ public class MainController extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("view/RegisterView.fxml"));
 			
-			Scene scene = new Scene(loader.load(), 300, 300);
+			registerScene = new Scene(loader.load(), 300, 300);
+			registerScene.getStylesheets().add("file:" + ClientConfig.STYLE_PATH);
 			registerController = loader.getController();
 			registerController.setMainController(this);
 			Stage stage = new Stage();
 			stage.setTitle("Register");
 			stage.initModality(Modality.WINDOW_MODAL);
-			stage.setScene(scene);
+			stage.setScene(registerScene);
 			stage.initOwner(primaryStage);
 			stage.show();
 		} catch (IOException e) {

@@ -1,6 +1,6 @@
 package crypto.client;
 
-import crypto.client.model.Config;
+import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyImages;
 import crypto.client.model.CurrencyList;
@@ -86,7 +86,7 @@ public class GraphViewController implements Initializable {
 
 		comboBox.getItems().addAll(CurrencyList.getCurrencyList());
 		for (Currency currency : comboBox.getItems()) {
-			if (currency.getSymbol().equals(Config.DEFAULT_SYMBOL)) {
+			if (currency.getSymbol().equals(ClientConfig.DEFAULT_SYMBOL)) {
 				comboBox.getSelectionModel().select(currency);
 				break;
 			}
