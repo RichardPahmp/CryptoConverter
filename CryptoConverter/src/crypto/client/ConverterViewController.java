@@ -211,7 +211,7 @@ public class ConverterViewController implements ConverterPaneListener {
 			}
 		}
 		try {
-			save.saveToFile("CryptoConverter/files/save.dat");
+			save.saveToFile("files/save.dat");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
