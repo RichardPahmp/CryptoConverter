@@ -66,11 +66,15 @@ public class SettingsViewController implements Initializable {
 	private void populateStyleComboBox() {
 		File folder = new File("files/css");
 		File[] fileList = folder.listFiles();
+		String currentStyle = ClientConfig.STYLE_PATH;
 		for(File file : fileList) {
 			StyleListItem item = new StyleListItem(file.getName(), "files/css/" + file.getName());
 			styleComboBox.getItems().add(item);
+			if(item.urlString.equals(currentStyle)) {
+				styleComboBox.getSelectionModel().select(item);
+			}
 		}
-		styleComboBox.getSelectionModel().select(0);
+		
 	}
 	
 	@FXML
