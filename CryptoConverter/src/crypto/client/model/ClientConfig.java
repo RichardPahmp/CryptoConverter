@@ -25,6 +25,7 @@ public class ClientConfig {
 			prop.setProperty("DEFAULT_SYMBOL", DEFAULT_SYMBOL);
 			prop.setProperty("LIVE_FEED_RATE", LIVE_FEED_RATE+"");
 			prop.setProperty("STYLE", STYLE_PATH);
+			prop.setProperty("PORT", PORT+"");
 			prop.store(writer, "Client settings");
 			writer.close();
 		} catch (IOException e) {
