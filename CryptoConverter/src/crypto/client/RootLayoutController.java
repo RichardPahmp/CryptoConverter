@@ -40,18 +40,27 @@ public class RootLayoutController{
 	@FXML
 	private PasswordField passwordField;
 	
+	/**
+	 * Show the login fields and hide other fields
+	 */
 	private void showLogin() {
 		logoutBox.setVisible(false);
 		loginBox.setVisible(true);
 		retryBox.setVisible(false);
 	}
 	
+	/**
+	 * Show the logout fields and hide other fields
+	 */
 	private void showLogout() {
 		logoutBox.setVisible(true);
 		loginBox.setVisible(false);
 		retryBox.setVisible(false);
 	}
 	
+	/**
+	 * Show the retry fields and hide other fields
+	 */
 	private void showRetry() {
 		logoutBox.setVisible(false);
 		loginBox.setVisible(false);

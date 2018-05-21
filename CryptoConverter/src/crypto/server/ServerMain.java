@@ -13,9 +13,12 @@ public class ServerMain extends Application {
 
 	private CryptoServer server;
 	private ServerViewController viewController;
+	private ServerConfig config;
 	
 	@Override
 	public void start(Stage primaryStage) {
+		config = new ServerConfig();
+		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("view/ServerView.fxml"));
 		primaryStage.setTitle("CryptoConverter Server");
@@ -24,7 +27,11 @@ public class ServerMain extends Application {
 			AnchorPane pane = loader.load();
 			viewController = loader.getController();
 			viewController.setOnRestart(this::restartServer);
-			primaryStage.setOnCloseRequest(e -> server.close());
+			primaryStage.setOnCloseRequest(e -> {
+				if(server != null) {
+					server.close();
+				}
+			});
 			
 			Scene scene = new Scene(pane);
 			primaryStage.setScene(scene);
@@ -40,7 +47,8 @@ public class ServerMain extends Application {
 	}
 	
 	private void startServer() {
-		server = new CryptoServer(viewController, 3280);
+		int port = config.getPort();
+		server = new CryptoServer(viewController, port);
 		server.setName("Server thread");
 		server.start();
 	}

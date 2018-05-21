@@ -113,10 +113,8 @@ public class GraphViewController implements Initializable {
 			ToggleButton button = createToggleButton(currency, history);
 			listView.getItems().add(button);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OutOfCallsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

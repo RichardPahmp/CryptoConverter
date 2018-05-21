@@ -9,6 +9,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
+import crypto.client.model.ClientConfig;
 import crypto.messages.LoginFailedMessage;
 import crypto.messages.LoginMessage;
 import crypto.messages.LoginSuccessfulMessage;
@@ -47,7 +48,7 @@ public class ServerConnection {
 				if(socket != null) {
 					socket.close();
 				}
-				socket = new Socket("localhost", 3280);
+				socket = new Socket(ClientConfig.IP_ADDRESS, ClientConfig.PORT);
 				oos = new ObjectOutputStream(socket.getOutputStream());
 				ois = new ObjectInputStream(socket.getInputStream());
 				isAlive = true;

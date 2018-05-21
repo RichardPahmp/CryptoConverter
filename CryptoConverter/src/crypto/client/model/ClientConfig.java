@@ -9,6 +9,9 @@ public class ClientConfig {
 	public static int LIVE_FEED_RATE;
 	public static String STYLE_PATH;
 	
+	public static int PORT;
+	public static String IP_ADDRESS;
+	
 	private static String FILE_PATH = "files/ClientSettings.properties";
 
 	/**
@@ -41,6 +44,8 @@ public class ClientConfig {
 			reader.close();
 			DEFAULT_SYMBOL = prop.getProperty("DEFAULT_SYMBOL");
 			LIVE_FEED_RATE = Integer.parseInt(prop.getProperty("LIVE_FEED_RATE"));
+			PORT = Integer.parseInt(prop.getProperty("PORT"));
+			IP_ADDRESS = prop.getProperty("IP_ADDRESS");
 			STYLE_PATH = prop.getProperty("STYLE");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

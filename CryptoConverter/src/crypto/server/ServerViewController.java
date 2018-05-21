@@ -35,6 +35,7 @@ public class ServerViewController {
 	
 	@FXML
 	private void onRestart() {
+		textArea.clear();
 		if(restartHandler != null) {
 			restartHandler.handle();
 		}

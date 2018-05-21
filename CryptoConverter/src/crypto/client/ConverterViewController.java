@@ -102,6 +102,10 @@ public class ConverterViewController implements ConverterPaneListener {
 		unsavedChanges = true;
 	}
 
+	/**
+	 * Returns a ConverterPane with this viewer added as a listener.
+	 * @return
+	 */
 	private ConverterPane createConverterPane() {
 		ConverterPane pane = new ConverterPane(currencies);
 		pane.addConverterPaneListener(this);
