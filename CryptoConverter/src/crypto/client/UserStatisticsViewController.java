@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-public class UserStatisticsViewController implements Initializable {
+public class UserStatisticsViewController {
 
 	@FXML
 	private Label labelMeCurrency;
@@ -37,18 +37,7 @@ public class UserStatisticsViewController implements Initializable {
 
 	private MainController mainController;
 
-	private Choices currentChoice;
-
 	private HashMap<String, Integer> myDataMap, allDataMap;
-
-	private enum Choices {
-		myData, allData;
-	}
-
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-
-	}
 
 	/**
 	 * Outputs the data in the myDataMap to the view
