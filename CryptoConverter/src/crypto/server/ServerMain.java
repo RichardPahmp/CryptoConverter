@@ -34,6 +34,7 @@ public class ServerMain extends Application {
 			});
 			
 			Scene scene = new Scene(pane);
+			primaryStage.setOnCloseRequest(e -> server.close());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException e) {
