@@ -4,6 +4,7 @@ import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
 import crypto.client.model.LiveCurrency;
+import crypto.util.ComboboxUtil;
 import crypto.util.LiveCurrencyData;
 import crypto.util.SearchUtil;
 import javafx.collections.FXCollections;
@@ -96,7 +97,7 @@ public class LivefeedViewController implements Initializable {
 		}
 		tableView.getColumns().addAll(currencyName, currencyPrice, currencyVolume24h, currencyMarketCap, currencyChange);
 
-		new SearchUtil(comboBox);
+		ComboboxUtil.setupCombobox(comboBox);
 
 		loadLiveCurrencies();
 

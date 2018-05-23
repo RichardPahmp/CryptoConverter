@@ -3,6 +3,7 @@ package crypto.client;
 import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyList;
+import crypto.util.ComboboxUtil;
 import crypto.util.SearchUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -57,7 +58,7 @@ public class SettingsViewController implements Initializable {
 		currencyComboBox.selectionModelProperty().addListener((obs, oldV, newV) -> onComboBoxChange());
 		slider.valueProperty().addListener((obs, oldV, newV) -> onSliderChange());
 
-		new SearchUtil(currencyComboBox);
+		ComboboxUtil.setupCombobox(currencyComboBox);
 	}
 	
 	/**

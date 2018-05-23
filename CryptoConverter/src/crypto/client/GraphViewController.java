@@ -4,6 +4,7 @@ import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
 import crypto.client.model.CurrencyImages;
 import crypto.client.model.CurrencyList;
+import crypto.util.ComboboxUtil;
 import crypto.util.SearchUtil;
 import crypto.util.TimeUtil;
 import javafx.collections.FXCollections;
@@ -97,7 +98,7 @@ public class GraphViewController implements Initializable {
 		datePickerFrom.setOnAction(e -> onDateChanged());
 		datePickerTo.setOnAction(e -> onDateChanged());
 
-		new SearchUtil(comboBox);
+		ComboboxUtil.setupCombobox(comboBox);
 	}
 
 	/**

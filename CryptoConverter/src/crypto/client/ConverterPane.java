@@ -2,6 +2,7 @@ package crypto.client;
 
 import crypto.client.model.ClientConfig;
 import crypto.client.model.Currency;
+import crypto.util.ComboboxUtil;
 import crypto.util.ConverterData;
 import crypto.util.SearchUtil;
 import javafx.animation.KeyFrame;
@@ -79,10 +80,8 @@ public class ConverterPane extends HBox {
 		selectCurrencyLeft(ClientConfig.DEFAULT_SYMBOL);
 		selectCurrencyRight(ClientConfig.DEFAULT_SYMBOL);
 
-		leftComboBox.setCellFactory(createCellFactory());
-		leftComboBox.setButtonCell(createListCell());
-		rightComboBox.setCellFactory(createCellFactory());
-		rightComboBox.setButtonCell(createListCell());
+		ComboboxUtil.setupCombobox(leftComboBox);
+		ComboboxUtil.setupCombobox(rightComboBox);
 
 		Image upArrowImage = new Image("file:files/images/UpArrow.png", 16, 16, true, true);
 		Image downArrowImage = new Image("file:files/images/DownArrow.png", 16, 16, true, true);
@@ -93,9 +92,6 @@ public class ConverterPane extends HBox {
 
 		upArrowButton.setOnAction(e -> listener.moveUp(this));
 		downArrowButton.setOnAction(e -> listener.moveDown(this));
-
-		new SearchUtil(leftComboBox);
-		new SearchUtil(rightComboBox);
 
 		leftComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
 		rightComboBox.valueProperty().addListener((obs, newV, oldV) -> listener.onChange());
@@ -262,33 +258,4 @@ public class ConverterPane extends HBox {
 		rightTextField.setText(text);
 	}
 
-	private Callback<ListView<Currency>, ListCell<Currency>> createCellFactory() {
-		return new Callback<ListView<Currency>, ListCell<Currency>>() {
-			@Override
-			public ListCell<Currency> call(ListView<Currency> arg0) {
-				return new ListCell<Currency>() {
-					@Override
-					protected void updateItem(Currency item, boolean empty) {
-						super.updateItem(item, empty);
-						if (item != null && !empty) {
-							setText(item.getCoinFullName());
-						}
-					}
-				};
-			}
-		};
-	}
-
-	private ListCell<Currency> createListCell() {
-		return new ListCell<Currency>() {
-			protected void updateItem(Currency item, boolean empty) {
-				super.updateItem(item, empty);
-				if (item != null && !empty) {
-					setText(item.getCoinName());
-				}
-			}
-
-			;
-		};
-	}
 }
