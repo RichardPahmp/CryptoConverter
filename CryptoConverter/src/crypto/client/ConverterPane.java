@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -25,7 +26,7 @@ import java.io.IOException;
  * An HBox node Containing UI elements for converting a currency to a different
  * currency.
  *
- * @author Richard
+ * @author Richard, Emil
  */
 public class ConverterPane extends HBox {
 
@@ -211,8 +212,12 @@ public class ConverterPane extends HBox {
 		try {
 			sum = Double.parseDouble(leftTextField.getText());
 		} catch (NumberFormatException e) {
-			// TODO: Show error. the input is not a number.
-			System.out.println("Add error handling for not-a-number inputs");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error Dialog");
+			alert.setHeaderText("Wrong Input");
+			alert.setContentText("Please input a valid number");
+			
+			alert.showAndWait();
 			e.printStackTrace();
 			return;
 		}
@@ -230,8 +235,12 @@ public class ConverterPane extends HBox {
 		try {
 			sum = Double.parseDouble(rightTextField.getText());
 		} catch (NumberFormatException e) {
-			// TODO: Show error. the input is not a number.
-			System.out.println("Add error handling for not-a-number inputs");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error Dialog");
+			alert.setHeaderText("Wrong Input");
+			alert.setContentText("Please input a valid number");
+			
+			alert.showAndWait();
 			e.printStackTrace();
 			return;
 		}
