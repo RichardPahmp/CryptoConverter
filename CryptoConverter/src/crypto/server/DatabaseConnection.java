@@ -10,7 +10,6 @@ public class DatabaseConnection {
 	private static String URL;
 	
 	private static String USERS_TABLE = "USERS";
-	private static String DATA_TABLE = "DATA";
 	private static String SEARCHES_TABLE = "SEARCHES";
 	
 	private Connection connection;
