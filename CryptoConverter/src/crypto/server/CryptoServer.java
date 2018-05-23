@@ -73,6 +73,9 @@ public class CryptoServer extends Thread {
 		}
 	}
 	
+	/**
+	 * Restarts the server and closes all clienthandler connections. 
+	 */
 	public void onRestart() {
 		viewController.log("Restarting server.");
 		
@@ -93,10 +96,15 @@ public class CryptoServer extends Thread {
 		}
 	}
 	
+	/**
+	 * Sets the boolean running to false and stops the serverSocket.
+	 */
 	public void close() {
 		running = false;
 		try {
-			serverSocket.close();
+			if(serverSocket != null) {
+				serverSocket.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

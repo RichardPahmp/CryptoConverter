@@ -15,6 +15,9 @@ public class ServerMain extends Application {
 	private ServerViewController viewController;
 	private ServerConfig config;
 	
+	/**
+	 * Starts the server interface used to keep track of the running server.
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		config = new ServerConfig();
@@ -47,6 +50,9 @@ public class ServerMain extends Application {
 		}
 	}
 	
+	/**
+	 * Starts the server.
+	 */
 	private void startServer() {
 		int port = config.getPort();
 		server = new CryptoServer(viewController, port);
@@ -54,6 +60,9 @@ public class ServerMain extends Application {
 		server.start();
 	}
 	
+	/**
+	 * Restarts the server
+	 */
 	private void restartServer() {
 		server.onRestart();
 		startServer();
