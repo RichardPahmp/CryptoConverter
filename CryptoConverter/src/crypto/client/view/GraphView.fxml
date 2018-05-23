@@ -26,7 +26,7 @@
             		<children>
             			<HBox>
             				<children>
-            					<ComboBox fx:id="comboBox" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            					<ComboBox fx:id="comboBox" HBox.hgrow="ALWAYS" />
             					<Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddButtonClick" text="Add" />
             				</children>
             			</HBox>

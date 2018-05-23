@@ -56,7 +56,13 @@ public class MainController extends Application {
 		primaryStage.setTitle("CryptoConverter");
 		primaryStage.setOnCloseRequest(this::onClose);
 
-		initRootLayout();
+		try {
+			initRootLayout();
+		} catch (IOException e) {
+			e.printStackTrace();
+			primaryStage.close();
+			return;
+		}
 		
 		serverConnection = new ServerConnection(this);
 		
@@ -76,54 +82,51 @@ public class MainController extends Application {
 
 	/**
 	 * load the different views and put them into the RootLayout.
+	 * @throws IOException 
 	 */
-	private void initRootLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainController.class.getResource("view/RootLayout.fxml"));
-			BorderPane rootLayout = (BorderPane) loader.load();
-			rootController = loader.getController();
-			rootController.setMainController(this);
-			tabPane = new TabPane();
-			rootLayout.setCenter(tabPane);
+	private void initRootLayout() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(MainController.class.getResource("view/RootLayout.fxml"));
+		BorderPane rootLayout = (BorderPane) loader.load();
+		rootController = loader.getController();
+		rootController.setMainController(this);
+		tabPane = new TabPane();
+		rootLayout.setCenter(tabPane);
 
-			//load the converter tab
-			Tab conversionTab = new Tab("Conversion");
-			conversionTab.setClosable(false);
-			loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("view/ConverterView.fxml"));
-			conversionTab.setContent(loader.load());
-			converterController = loader.getController();
-			converterController.setMainController(this);
-			tabPane.getTabs().add(conversionTab);
+		//load the converter tab
+		Tab conversionTab = new Tab("Conversion");
+		conversionTab.setClosable(false);
+		loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("view/ConverterView.fxml"));
+		conversionTab.setContent(loader.load());
+		converterController = loader.getController();
+		converterController.setMainController(this);
+		tabPane.getTabs().add(conversionTab);
 
-			//load the graph tab
-			Tab graphTab = new Tab("Graphs");
-			graphTab.setClosable(false);
-			loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("view/GraphView.fxml"));
-			graphTab.setContent(loader.load());
-			graphController = loader.getController();
-			graphController.setMainController(this);
-			tabPane.getTabs().add(graphTab);
-			
-			//load the livefeed tab
-			Tab liveTab = new Tab("Live");
-			liveTab.setClosable(false);
-			loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("view/LivefeedView.fxml"));
-			liveTab.setContent(loader.load());
-			livefeedController = loader.getController();
-			livefeedController.setMainController(this);
-			tabPane.getTabs().add(liveTab);
+		//load the graph tab
+		Tab graphTab = new Tab("Graphs");
+		graphTab.setClosable(false);
+		loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("view/GraphView.fxml"));
+		graphTab.setContent(loader.load());
+		graphController = loader.getController();
+		graphController.setMainController(this);
+		tabPane.getTabs().add(graphTab);
+		
+		//load the livefeed tab
+		Tab liveTab = new Tab("Live");
+		liveTab.setClosable(false);
+		loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("view/LivefeedView.fxml"));
+		liveTab.setContent(loader.load());
+		livefeedController = loader.getController();
+		livefeedController.setMainController(this);
+		tabPane.getTabs().add(liveTab);
 
-			primaryScene = new Scene(rootLayout);
-			primaryScene.getStylesheets().add("file:" + ClientConfig.STYLE_PATH);
-			primaryStage.setScene(primaryScene);
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		primaryScene = new Scene(rootLayout);
+		primaryScene.getStylesheets().add("file:" + ClientConfig.STYLE_PATH);
+		primaryStage.setScene(primaryScene);
+		primaryStage.show();
 	}
 
 
