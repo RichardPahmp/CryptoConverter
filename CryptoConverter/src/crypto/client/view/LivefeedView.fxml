@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.121"
-			xmlns:fx="http://javafx.com/fxml/1" fx:controller="crypto.client.LivefeedViewController">
-	<HBox fx:id="hBox">
-		<children>
-			<ComboBox fx:id="comboBox" maxWidth="1.7976931348623157E308" minWidth="100.0" HBox.hgrow="ALWAYS"/>
-			<Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddButtonClick" text="Add"/>
-			<Button minHeight="-Infinity" mnemonicParsing="false" onAction="#handleDeleteCurrency" text="Remove"/>
-			<Button layoutX="426.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="74.0"
-					onAction="#storeLiveCurrencies" text="Save list"/>
-		</children>
-	</HBox>
-	<TableView fx:id="tableView" layoutX="282.0" layoutY="168.0" prefHeight="200.0" prefWidth="200.0"
-			   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-			   AnchorPane.topAnchor="50.0">
-		<columns>
-		</columns>
-	</TableView>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 
-</AnchorPane>
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="crypto.client.LivefeedViewController">
+	<top>
+		<HBox>
+			<children>
+				<ComboBox fx:id="comboBox" minWidth="100.0" HBox.hgrow="ALWAYS" />
+				<Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddButtonClick" text="Add" />
+				<Button minHeight="-Infinity" mnemonicParsing="false" onAction="#handleDeleteCurrency" text="Remove" />
+				<Button layoutX="426.0" mnemonicParsing="false" onAction="#storeLiveCurrencies" text="Save list" />
+			</children>
+		</HBox>
+	</top>
+	<center>
+		<TableView fx:id="tableView" layoutX="282.0" layoutY="168.0" prefHeight="200.0" prefWidth="200.0">
+			<columns>
+			</columns>
+		</TableView>
+	</center>
+
+</BorderPane>
