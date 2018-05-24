@@ -229,6 +229,9 @@ public class MainController extends Application {
 	
 	public void onLogout() {
 		rootController.setLoginAvailible();
+		if(userDataTab != null) {
+			Platform.runLater(() -> tabPane.getTabs().remove(userDataTab));
+		}
 	}
 	
 	public void onSearch(String[] symbols) {
