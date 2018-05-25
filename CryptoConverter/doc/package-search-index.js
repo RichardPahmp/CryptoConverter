@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"crypto.client"},{"l":"crypto.client.model"},{"l":"crypto.demo"},{"l":"crypto.messages"},{"l":"crypto.server"},{"l":"crypto.util"}]
+packageSearchIndex = [{"l":"crypto.client.model"}]
