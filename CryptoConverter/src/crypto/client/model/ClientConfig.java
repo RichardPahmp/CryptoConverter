@@ -26,6 +26,7 @@ public class ClientConfig {
 			prop.setProperty("LIVE_FEED_RATE", LIVE_FEED_RATE+"");
 			prop.setProperty("STYLE", STYLE_PATH);
 			prop.setProperty("PORT", PORT+"");
+			prop.setProperty("IP_ADDRESS", IP_ADDRESS);
 			prop.store(writer, "Client settings");
 			writer.close();
 		} catch (IOException e) {
